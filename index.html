@@ -7,12 +7,12 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Segoe UI',sans-serif; background:#f0f2f5; color:#333; padding:10px; line-height:1.4; display:flex; justify-content:center; align-items:center; min-height:100vh; }
+    body { font-family:'Segoe UI',sans-serif; background:#f0f2f5; color:#333; padding:10px; line-height:1.4; display:flex; justify-content:center; align-items:center; min-height:1001vh; }
     
     /* Login Page */
     .login-container { background:#fff; padding:30px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); text-align:center; width:100%; max-width:360px; }
     .login-title { font-size:1.8em; font-weight:bold; background:linear-gradient(45deg,#ff6b35,#f7931e); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:16px; }
-    .login-input { width:100%; padding:12px; margin:12px 0; border:1px solid #ddd; border-radius:8px; font-size:1em; }
+    .login-input { width:100%; padding:12px; margin:12px 0; border:1px solid #ddd; border-radius:8px; font-size:1em; font-family: 'Arial'; letter-spacing: 4px; }
     .login-btn { width:100%; padding:12px; background:#3498db; color:#fff; border:none; border-radius:8px; font-weight:bold; cursor:pointer; transition:background 0.2s; }
     .login-btn:hover { background:#2980b9; }
     .error-msg { color:#e74c3c; margin-top:8px; font-weight:bold; display:none; }
@@ -53,6 +53,7 @@
     .emote-id { color:#777; font-size:0.7em; margin:3px 0; }
     .send-btn { width:100%; padding:8px; background:#3498db; color:#fff; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.8em; transition:0.2s; }
     .send-btn:hover { background:#2980b9; }
+    .send-btn:disabled { background:#95a5a6; cursor:not-allowed; }
 
     .logout-btn { position:fixed; top:12px; right:12px; background:#e74c3c; color:#fff; padding:8px 12px; border-radius:50px; font-weight:bold; cursor:pointer; font-size:0.8em; z-index:1000; }
 
@@ -68,13 +69,14 @@
   <div id="loginPage" class="login-container">
     <h1 class="login-title">AL AMIN EMOTE SERVER</h1>
     <input 
-      type="password" 
+      type="text" 
       id="passwordInput" 
       class="login-input" 
       placeholder="Enter Password" 
       inputmode="text" 
       autocomplete="off" 
       pattern="[A-Za-z0-9]*" 
+      style="font-family: 'Arial'; letter-spacing: 4px;"
     />
     <button id="loginBtn" class="login-btn">Login</button>
     <p id="errorMsg" class="error-msg">Wrong Password!</p>
@@ -122,10 +124,40 @@
     const CURRENT_PASSWORD = "alamin123";
     const FAST_API_URL = "https://emote-psi.vercel.app/api/fastemote";
 
-    // Login
+    // === PASSWORD MASKING (•••••) BUT ALLOW NUMBERS ===
+    const pwdInput = document.getElementById('passwordInput');
+    let realPassword = '';
+
+    pwdInput.addEventListener('input', function() {
+      const input = this.value;
+      const clean = input.replace(/[^A-Za-z0-9]/g, ''); // Only letters & numbers
+      realPassword = clean;
+      this.value = '•'.repeat(clean.length);
+      this.dataset.value = clean; // Store real password
+    });
+
+    pwdInput.addEventListener('focus', function() {
+      if (realPassword) {
+        this.value = realPassword;
+      }
+    });
+
+    pwdInput.addEventListener('blur', function() {
+      if (realPassword) {
+        this.value = '•'.repeat(realPassword.length);
+      }
+    });
+
+    pwdInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('loginBtn').click();
+      }
+    });
+
+    // === LOGIN CHECK ===
     document.getElementById('loginBtn').onclick = () => {
-      const val = document.getElementById('passwordInput').value.trim();
-      if (val === CURRENT_PASSWORD) {
+      const entered = pwdInput.dataset.value || '';
+      if (entered === CURRENT_PASSWORD) {
         document.getElementById('loginPage').style.display = 'none';
         document.getElementById('mainPage').style.display = 'block';
         showTab('all');
@@ -136,15 +168,15 @@
       }
     };
 
-    document.getElementById('passwordInput').onkeypress = e => e.key === 'Enter' && document.getElementById('loginBtn').click();
-
     function logout() {
       document.getElementById('loginPage').style.display = 'block';
       document.getElementById('mainPage').style.display = 'none';
-      document.getElementById('passwordInput').value = '';
+      pwdInput.value = '';
+      realPassword = '';
+      pwdInput.dataset.value = '';
     }
 
-    // === 135+ Emotes (Full List) ===
+    // === Emotes (Remove Duplicates) ===
     const emotes = [
       {"id":"909051014","name":"puffy ride","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051014.png"},
       {"id":"909050009","name":"(circle)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050009.png"},
@@ -201,7 +233,6 @@
       {"id":"909038012","name":"(evo g18)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909038012.png"},
       {"id":"909035012","name":"(evo AN94)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035012.png"},
       {"id":"909042008","name":"(evo Woodpecker)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909042008.png"},
-      // === 85+ Missing Emotes ===
       {"id":"909034013","name":"CS-Ranked Master Emote","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909034013.png"},
       {"id":"909034014","name":"Yes, I do","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909034014.png"},
       {"id":"909035001","name":"Free Money!","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035001.png"},
@@ -221,9 +252,6 @@
       {"id":"909036005","name":"Agile Boxer","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036005.png"},
       {"id":"909036006","name":"Sunbathing","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036006.png"},
       {"id":"909036008","name":"Skateboard Swag","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036008.png"},
-      {"id":"909036009","name":"Phantom Tamer","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036009.png"},
-      {"id":"909036010","name":"The Signal","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036010.png"},
-      {"id":"909036011","name":"Eternal Descent","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036011.png"},
       {"id":"909036012","name":"Swaggy Dance","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036012.png"},
       {"id":"909036014","name":"Admire","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036014.png"},
       {"id":"909037001","name":"Reindeer Float","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037001.png"},
@@ -239,18 +267,13 @@
       {"id":"909037012","name":"Clap Dance","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037012.png"},
       {"id":"909038001","name":"The Influencer","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909038001.png"},
       {"id":"909038003","name":"Techno Blast","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909038003.png"},
-      {"id":"909038004","name":"Be My Valentine","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909038004.png"},
       {"id":"909000002","name":"LOL","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000002.png"},
       {"id":"909000003","name":"Provoke","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000003.png"},
-      {"id":"909000010","name":"Flowers of Love","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000010.png"},
-      {"id":"909000014","name":"FWC Throne","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000014.png"},
       {"id":"909000032","name":"Selfie","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000032.png"},
-      {"id":"909000034","name":"Pirate's Flag","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000034.png"},
       {"id":"909000036","name":"Top DJ","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000036.png"},
-      {"id":"909000038","name":"Power of money","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000038.png"},
+      {"id":"909000038","name":"Power of money","img":"https://cdn.jsdelivr.net/gh/ShahGCreatoric/icon@main/PNG/909000038.png"},
       {"id":"909000039","name":"Eat my dust","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000039.png"},
       {"id":"909000041","name":"Kongfu","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000041.png"},
-      {"id":"909000045","name":"I heart you","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000045.png"},
       {"id":"909000046","name":"Tea Time","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000046.png"},
       {"id":"909000052","name":"Doggie","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000052.png"},
       {"id":"909000055","name":"I'm Rich!","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000055.png"},
@@ -271,14 +294,14 @@
       {"id":"909000073","name":"Ground Punch","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000073.png"},
       {"id":"909000074","name":"The Biker","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000074.png"},
       {"id":"909000076","name":"One-Finger Pushup","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000076.png"},
-      {"id":"909000077","name":"Stage Time","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000077.png"},
+      {"id人之":"909000077","name":"Stage Time","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000077.png"},
       {"id":"909000078","name":"Booyah! Balloon","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000078.png"},
       {"id":"909000079","name":"More Practice","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000079.png"},
       {"id":"909000080","name":"FFWS 2021","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000080.png"},
       {"id":"909000086","name":"Mythos Four","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000086.png"},
       {"id":"909000087","name":"Champion Grab","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000087.png"},
       {"id":"909000088","name":"Win and Chill","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000088.png"},
-      {"id":"909000089","name":"Hadouken","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000089.png"},
+      {"id":"909000089","name":"Hadouken","img":"https://.:/cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000089.png"},
       {"id":"909000091","name":"Big Smash","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000091.png"},
       {"id":"909000093","name":"All In Control","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000093.png"},
       {"id":"909000094","name":"Debugging","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000094.png"},
@@ -287,7 +310,7 @@
       {"id":"909001121","name":"Dribble King","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909001121.png"},
       {"id":"909001123","name":"Mind It!","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909001123.png"},
       {"id":"909001124","name":"Golden Combo","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909001124.png"}
-    ];
+    ].filter((v, i, a) => a.findIndex(t => t.id === v.id) === i); // Remove duplicates
 
     const grid = document.getElementById('grid');
     let currentList = [];
@@ -326,47 +349,63 @@
       }
     }
 
-    grid.addEventListener('click', e => {
-      if (e.target.classList.contains('send-btn')) {
-        sendEmote(e.target.dataset.id);
+    let isSending = false;
+    grid.addEventListener('click', async e => {
+      if (e.target.classList.contains('send-btn') && !isSending) {
+        isSending = true;
+        e.target.disabled = true;
+        await sendEmote(e.target.dataset.id);
+        setTimeout(() => {
+          e.target.disabled = false;
+          isSending = false;
+        }, 2000);
       }
     });
 
-    // === Fixed Fast Emote Send (GET + CORS Bypass) ===
     async function sendEmote(id) {
       const u1 = document.getElementById('uid1').value.trim();
-      if (!u1) return showResult("UID 1 required!", "error");
+      if (!u1) {
+        showResult("UID 1 required!", "error");
+        return;
+      }
 
-      const params = new URLSearchParams();
-      params.append('tc', document.getElementById('teamCode').value.trim() || '');
-      params.append('emote_id', id);
-      params.append('uid1', u1);
-      params.append('uid2', document.getElementById('uid2').value.trim() || '');
-      params.append('uid3', document.getElementById('uid3').value.trim() || '');
-      params.append('uid4', document.getElementById('uid4').value.trim() || '');
+      const params = new URLSearchParams({
+        tc: document.getElementById('teamCode').value.trim() || '',
+        emote_id: id,
+        uid1: u1,
+        uid2: document.getElementById('uid2').value.trim() || '',
+        uid3: document.getElementById('uid3').value.trim() || '',
+        uid4: document.getElementById('uid4').value.trim() || ''
+      });
 
       const url = `${FAST_API_URL}?${params.toString()}`;
 
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+
         const res = await fetch(url, {
           method: "GET",
           headers: {
             "Accept": "application/json",
+            "Cache-Control": "no-cache",
             "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36"
           },
-          mode: "cors"
+          signal: controller.signal
         });
 
-        const data = await res.json().catch(() => ({}));
+        clearTimeout(timeoutId);
+        let data = {};
+        try { data = await res.json(); } catch { data = { status: "error", message: "Invalid JSON" }; }
 
         if (res.ok && data.status === "success") {
           showResult(`Sent ${id}!`, "success");
           showNotif("ইমোট পাঠানো হয়েছে!");
         } else {
-          showResult(data.message || "Failed!", "error");
+          showResult(data.message || "Failed to send!", "error");
         }
       } catch (err) {
-        showResult("Network error! Check UID or API.", "error");
+        showResult(err.name === 'AbortError' ? "Timeout! Try again." : "Network error!", "error");
       }
     }
 
@@ -389,4 +428,4 @@
     document.getElementById('evo-tab').onclick = () => showTab('evo');
   </script>
 </body>
-    </html>
+</html>
