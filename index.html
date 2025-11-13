@@ -9,17 +9,16 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Segoe UI',sans-serif; background:#f0f2f5; color:#333; padding:10px; line-height:1.4; display:flex; justify-content:center; align-items:center; min-height:100vh; }
     
-    /* Login Page */
     .login-container { background:#fff; padding:30px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); text-align:center; width:100%; max-width:360px; }
     .login-title { font-size:1.8em; font-weight:bold; background:linear-gradient(45deg,#ff6b35,#f7931e); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:16px; }
-    .login-input { width:100%; padding:12px; margin:12px 0; border:1px solid #ddd; border-radius:8px; font-size:1.2em; font-family: monospace; letter-spacing: 2px; }
+    .login-input { width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; font-size:1.2em; background:#fff; outline:none; cursor:text; font-family:monospace; letter-spacing:2px; }
+    .login-input:empty::before { content: attr(placeholder); color:#aaa; }
     .login-btn { width:100%; padding:12px; background:#3498db; color:#fff; border:none; border-radius:8px; font-weight:bold; cursor:pointer; transition:background 0.2s; }
     .login-btn:hover { background:#2980b9; }
     .error-msg { color:#e74c3c; margin-top:8px; font-weight:bold; display:none; }
     .telegram-login-btn { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:12px; background:#0088cc; color:#fff; text-decoration:none; border-radius:8px; font-weight:bold; margin-top:12px; transition:0.2s; }
     .telegram-login-btn:hover { background:#006699; }
 
-    /* Main Page */
     .main-container { display:none; width:100%; max-width:800px; }
     .header { text-align:center; margin-bottom:16px; }
     .title { font-size:2.2em; font-weight:bold; background:linear-gradient(45deg,#ff6b35,#f7931e); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px; }
@@ -68,15 +67,17 @@
   <!-- Login Page -->
   <div id="loginPage" class="login-container">
     <h1 class="login-title">AL AMIN EMOTE SERVER</h1>
-    <input 
-      type="text" 
-      id="passwordInput" 
-      class="login-input" 
-      placeholder="Enter Password" 
-      inputmode="text" 
-      autocomplete="off" 
-      style="font-family: monospace; font-size: 1.2em; letter-spacing: 2px;"
-    />
+
+    <div style="position:relative; margin:12px 0;">
+      <input type="text" id="realPasswordInput" style="position:absolute; left:-9999px;" autocomplete="off">
+      <div 
+        id="maskedPassword" 
+        contenteditable="true" 
+        class="login-input" 
+        placeholder="Enter Password"
+      ></div>
+    </div>
+
     <button id="loginBtn" class="login-btn">Login</button>
     <p id="errorMsg" class="error-msg">Wrong Password!</p>
     <a href="https://t.me/alamin_emote_server" target="_blank" class="telegram-login-btn">
@@ -120,43 +121,45 @@
   </div>
 
   <script>
-    const CURRENT_PASSWORD = "alamin123"; // এখানে যেকোনো লম্বা পাসওয়ার্ড দিতে পারো
+    const CURRENT_PASSWORD = "alamin123";
     const FAST_API_URL = "https://emote-psi.vercel.app/api/fastemote";
 
-    // === PASSWORD MASKING (•••••) BUT SUPPORT LONG WORDS ===
-    const pwdInput = document.getElementById('passwordInput');
-    let realPassword = '';
+    // === PASSWORD MASKING WITH CONTENTEDITABLE ===
+    const realInput = document.getElementById('realPasswordInput');
+    const maskedDiv = document.getElementById('maskedPassword');
 
-    pwdInput.addEventListener('input', function() {
-      const input = this.value;
-      const clean = input.replace(/[^A-Za-z0-9]/g, ''); 
-      realPassword = clean;
-      this.value = '•'.repeat(clean.length);
-      this.dataset.value = clean;
+    maskedDiv.addEventListener('input', function() {
+      const text = this.textContent || '';
+      const clean = text.replace(/[^A-Za-z0-9]/g, '');
+      realInput.value = clean;
+      this.textContent = '•'.repeat(clean.length);
+      const range = document.createRange();
+      const sel = window.getSelection();
+      range.selectNodeContents(this);
+      range.collapse(false);
+      sel.removeAllRanges();
+      sel.addRange(range);
     });
 
-    pwdInput.addEventListener('focus', function() {
-      if (realPassword) {
-        this.value = realPassword;
-      }
+    maskedDiv.addEventListener('focus', function() {
+      if (realInput.value) this.textContent = realInput.value;
     });
 
-    pwdInput.addEventListener('blur', function() {
-      if (realPassword) {
-        this.value = '•'.repeat(realPassword.length);
-      }
+    maskedDiv.addEventListener('blur', function() {
+      if (realInput.value) this.textContent = '•'.repeat(realInput.value.length);
+      else this.textContent = '';
     });
 
-    pwdInput.addEventListener('keypress', function(e) {
+    maskedDiv.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
+        e.preventDefault();
         document.getElementById('loginBtn').click();
       }
     });
 
-    // === LOGIN CHECK ===
+    // === LOGIN ===
     document.getElementById('loginBtn').onclick = () => {
-      const entered = pwdInput.dataset.value || '';
-      if (entered === CURRENT_PASSWORD) {
+      if (realInput.value === CURRENT_PASSWORD) {
         document.getElementById('loginPage').style.display = 'none';
         document.getElementById('mainPage').style.display = 'block';
         showTab('all');
@@ -170,28 +173,20 @@
     function logout() {
       document.getElementById('loginPage').style.display = 'block';
       document.getElementById('mainPage').style.display = 'none';
-      pwdInput.value = '';
-      realPassword = '';
-      pwdInput.dataset.value = '';
+      realInput.value = '';
+      maskedDiv.textContent = '';
     }
 
-    // === Emotes (Remove Duplicates) ===
-    const emotes = [ /* ... তোমার সব ইমোট ... */ ].filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
-
-    // ... বাকি কোড আগের মতোই থাকবে ...
-    // (আমি শুধু লগইন অংশ ফিক্স করেছি)
-
+    // === EMOTES ===
+    const emotes = [ /* তোমার ইমোট লিস্ট */ ].filter((v,i,a)=>a.findIndex(t=>t.id===v.id)===i);
     const grid = document.getElementById('grid');
     let currentList = [];
 
     function showTab(tab) {
-      const allBtn = document.getElementById('all-tab');
-      const evoBtn = document.getElementById('evo-tab');
       currentList = tab === 'all' ? emotes : emotes.filter(e => e.name.toLowerCase().includes('evo'));
-      allBtn.classList.toggle('active', tab === 'all');
-      evoBtn.classList.toggle('active', tab !== 'all');
-      grid.innerHTML = '';
-      renderChunk(0);
+      document.getElementById('all-tab').classList.toggle('active', tab === 'all');
+      document.getElementById('evo-tab').classList.toggle('active', tab !== 'all');
+      grid.innerHTML = ''; renderChunk(0);
     }
 
     function renderChunk(start) {
@@ -200,94 +195,57 @@
       chunk.forEach(emote => {
         const card = document.createElement('div');
         card.className = 'emote-card';
-        card.innerHTML = `
-          <img data-src="${emote.img}" alt="${emote.name}" onerror="this.src='https://via.placeholder.com/60/333/fff?text=?'" loading="lazy">
+        card.innerHTML = `<img data-src="${emote.img}" alt="${emote.name}" onerror="this.src='https://via.placeholder.com/60/333/fff?text=?'" loading="lazy">
           <div class="emote-name">${emote.name}</div>
           <div class="emote-id">ID: ${emote.id}</div>
-          <button class="send-btn" data-id="${emote.id}">Send</button>
-        `;
+          <button class="send-btn" data-id="${emote.id}">Send</button>`;
         fragment.appendChild(card);
       });
       grid.appendChild(fragment);
       document.querySelectorAll('img[data-src]').forEach(img => {
-        img.src = img.dataset.src;
-        img.onload = () => img.removeAttribute('data-src');
+        img.src = img.dataset.src; img.onload = () => img.removeAttribute('data-src');
       });
-      if (start + 12 < currentList.length) {
-        requestAnimationFrame(() => renderChunk(start + 12));
-      }
+      if (start + 12 < currentList.length) requestAnimationFrame(() => renderChunk(start + 12));
     }
 
     let isSending = false;
     grid.addEventListener('click', async e => {
       if (e.target.classList.contains('send-btn') && !isSending) {
-        isSending = true;
-        e.target.disabled = true;
+        isSending = true; e.target.disabled = true;
         await sendEmote(e.target.dataset.id);
-        setTimeout(() => {
-          e.target.disabled = false;
-          isSending = false;
-        }, 2000);
+        setTimeout(() => { e.target.disabled = false; isSending = false; }, 2000);
       }
     });
 
     async function sendEmote(id) {
       const u1 = document.getElementById('uid1').value.trim();
-      if (!u1) {
-        showResult("UID 1 required!", "error");
-        return;
-      }
-
-      const params = new URLSearchParams({
-        tc: document.getElementById('teamCode').value.trim() || '',
-        emote_id: id,
-        uid1: u1,
-        uid2: document.getElementById('uid2').value.trim() || '',
-        uid3: document.getElementById('uid3').value.trim() || '',
-        uid4: document.getElementById('uid4').value.trim() || ''
-      });
-
-      const url = `${FAST_API_URL}?${params.toString()}`;
-
+      if (!u1) { showResult("UID 1 required!", "error"); return; }
+      const params = new URLSearchParams({ tc: document.getElementById('teamCode').value.trim() || '', emote_id: id, uid1: u1, uid2: document.getElementById('uid2').value.trim() || '', uid3: document.getElementById('uid3').value.trim() || '', uid4: document.getElementById('uid4').value.trim() || '' });
+      const url = `${FAST_API_URL}?${params}`;
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-        const res = await fetch(url, {
-          method: "GET",
-          headers: {
-            "Accept": "application/json",
-            "Cache-Control": "no-cache",
-            "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36"
-          },
-          signal: controller.signal
-        });
-
+        const res = await fetch(url, { method: "GET", headers: { "Accept": "application/json", "Cache-Control": "no-cache", "User-Agent": "Mozilla/5.0" }, signal: controller.signal });
         clearTimeout(timeoutId);
-        let data = {};
-        try { data = await res.json(); } catch { data = { status: "error", message: "Invalid JSON" }; }
-
+        const data = await res.json().catch(() => ({}));
         if (res.ok && data.status === "success") {
-          showResult(`Sent ${id}!`, "success");
-          showNotif("ইমোট পাঠানো হয়েছে!");
+          showResult(`Sent ${id}!`, "success"); showNotif("ইমোট পাঠানো হয়েছে!");
         } else {
-          showResult(data.message || "Failed to send!", "error");
+          showResult(data.message || "Failed!", "error");
         }
       } catch (err) {
-        showResult(err.name === 'AbortError' ? "Timeout! Try again." : "Network error!", "error");
+        showResult(err.name === 'AbortError' ? "Timeout!" : "Network error!", "error");
       }
     }
 
     function showResult(msg, type) {
       const box = document.getElementById('resultBox');
-      box.textContent = msg;
-      box.className = `result-box ${type}`;
+      box.textContent = msg; box.className = `result-box ${type}`;
     }
 
     function showNotif(msg) {
       const n = document.createElement('div');
-      n.textContent = msg;
-      n.style.cssText = 'position:fixed;bottom:16px;right:16px;background:#27ae60;color:#fff;padding:10px 20px;border-radius:50px;font-weight:bold;z-index:10000;opacity:0;transition:0.3s';
+      n.textContent = msg; n.style.cssText = 'position:fixed;bottom:16px;right:16px;background:#27ae60;color:#fff;padding:10px 20px;border-radius:50px;font-weight:bold;z-index:10000;opacity:0;transition:0.3s';
       document.body.appendChild(n);
       setTimeout(() => n.style.opacity = '1', 50);
       setTimeout(() => { n.style.opacity = '0'; setTimeout(() => n.remove(), 300); }, 1800);
