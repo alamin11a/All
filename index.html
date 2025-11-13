@@ -67,7 +67,15 @@
   <!-- Login Page -->
   <div id="loginPage" class="login-container">
     <h1 class="login-title">AL AMIN EMOTE SERVER</h1>
-    <input type="password" id="passwordInput" class="login-input" placeholder="Enter Password" />
+    <input 
+      type="password" 
+      id="passwordInput" 
+      class="login-input" 
+      placeholder="Enter Password" 
+      inputmode="text" 
+      autocomplete="off" 
+      pattern="[A-Za-z0-9]*" 
+    />
     <button id="loginBtn" class="login-btn">Login</button>
     <p id="errorMsg" class="error-msg">Wrong Password!</p>
     <a href="https://t.me/alamin_emote_server" target="_blank" class="telegram-login-btn">
