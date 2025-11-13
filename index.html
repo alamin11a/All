@@ -13,9 +13,17 @@
     .login-container { background:#fff; padding:40px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.2); text-align:center; width:100%; max-width:400px; }
     .login-title { font-size:2em; font-weight:bold; background:linear-gradient(45deg,#ff6b35,#f7931e); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:20px; }
     .login-input { width:100%; padding:15px; margin:15px 0; border:1px solid #ddd; border-radius:10px; font-size:1em; }
-    .login-btn { width:100%; padding:15px; background:#3498db; color:#fff; border:none; border-radius:10px; font-weight:bold; cursor:pointer; transition:0.3s; }
+    .login-btn { width:100%; padding:15px; background:#3498db; color:#fff; border:none; border-radius:10px; font-weight:bold; cursor:pointer; transition:0.3s; margin:10px 0; }
     .login-btn:hover { background:#2980b9; }
     .error-msg { color:#e74c3c; margin-top:10px; font-weight:bold; display:none; }
+
+    /* Telegram Button in Login */
+    .telegram-login-btn {
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      width:100%; padding:15px; background:#0088cc; color:#fff; text-decoration:none;
+      border-radius:10px; font-weight:bold; font-size:1em; margin-top:15px; transition:0.3s;
+    }
+    .telegram-login-btn:hover { background:#006699; transform:scale(1.02); }
 
     /* Main Page */
     .main-container { display:none; width:100%; max-width:800px; }
@@ -64,6 +72,11 @@
     <input type="password" id="passwordInput" class="login-input" placeholder="Enter Password" />
     <button id="loginBtn" class="login-btn">Login</button>
     <p id="errorMsg" class="error-msg">Wrong Password!</p>
+
+    <!-- Telegram Button in Login Page -->
+    <a href="https://t.me/alamin_emote_server" target="_blank" class="telegram-login-btn">
+      <i class="fab fa-telegram-plane"></i> Join Telegram Channel
+    </a>
   </div>
 
   <!-- Main Page -->
@@ -118,12 +131,12 @@
     <section class="emote-grid" id="grid"></section>
   </div>
 
-  <!-- JS (Inline - No external file needed) -->
+  <!-- JS (Inline - 100% Working) -->
   <script>
     // Default Password
     const CURRENT_PASSWORD = "alamin123";
 
-    // Login Button
+    // Login
     document.getElementById('loginBtn').addEventListener('click', () => {
       const input = document.getElementById('passwordInput').value.trim();
       const error = document.getElementById('errorMsg');
@@ -138,7 +151,7 @@
       }
     });
 
-    // Enter Key Login
+    // Enter Key
     document.getElementById('passwordInput').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') document.getElementById('loginBtn').click();
     });
@@ -151,14 +164,14 @@
       document.getElementById('errorMsg').style.display = 'none';
     }
 
-    // Change Password (Console only)
+    // Change Password (Console)
     function changePassword(newPass) {
       window.CURRENT_PASSWORD = newPass;
-      alert("Password changed! New: " + newPass);
+      alert("Password changed to: " + newPass);
     }
 
-    // Emotes
-    const emotes = [ /* ... আপনার সব ইমোট ... */ 
+    // Emotes Array
+    const emotes = [
       {"id":"909051014","name":"puffy ride","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051014.png"},
       {"id":"909050009","name":"(circle)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050009.png"},
       {"id":"909051013","name":"petals","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051013.png"},
