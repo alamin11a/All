@@ -1,4 +1,4 @@
-// script.js - 100% Working Send + Tabs
+// script.js - 100% Working Send + Tabs + Notification
 const emotes = [
   {"id":"909051014","name":"puffy ride","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051014.png"},
   {"id":"909050009","name":"(circle)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050009.png"},
@@ -93,7 +93,7 @@ function renderEmotes(list) {
     grid.appendChild(card);
   });
 
-  // Send বাটনে ক্লিক লিসেনার যোগ করুন
+  // Send বাটনে ক্লিক লিসেনার
   document.querySelectorAll('.send-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       const id = this.getAttribute('data-id');
