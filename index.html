@@ -3,96 +3,461 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AL AMIN - Fast Emote Sender</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>AL AMIN - ULTRA EMOTE SERVER</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --neon: #00f5ff;
+      --pink: #ff00aa;
+      --purple: #9d00ff;
+      --dark: #0a0a1a;
+      --glass: rgba(10, 10, 26, 0.7);
+      --border: rgba(0, 245, 255, 0.3);
+    }
+
     * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Segoe UI',sans-serif; background:#f0f2f5; color:#333; padding:10px; line-height:1.4; display:flex; justify-content:center; align-items:center; min-height:100vh; }
-    
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: #0a0a1a;
+      color: #fff;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Particle Background */
+    #particles {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -1;
+    }
+
     /* Login Page */
-    .login-container { background:#fff; padding:30px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); text-align:center; width:100%; max-width:360px; }
-    .login-title { font-size:1.8em; font-weight:bold; background:linear-gradient(45deg,#ff6b35,#f7931e); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:16px; }
-    .login-input { width:100%; padding:12px; margin:12px 0; border:1px solid #ddd; border-radius:8px; font-size:1em; }
-    .login-btn { width:100%; padding:12px; background:#3498db; color:#fff; border:none; border-radius:8px; font-weight:bold; cursor:pointer; transition:background 0.2s; }
-    .login-btn:hover { background:#2980b9; }
-    .error-msg { color:#e74c3c; margin-top:8px; font-weight:bold; display:none; }
-    .telegram-login-btn { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:12px; background:#0088cc; color:#fff; text-decoration:none; border-radius:8px; font-weight:bold; margin-top:12px; transition:0.2s; }
-    .telegram-login-btn:hover { background:#006699; }
+    .login-container {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      padding: 50px 35px;
+      border-radius: 24px;
+      box-shadow: 0 0 50px rgba(0, 245, 255, 0.2), inset 0 0 30px rgba(0, 245, 255, 0.1);
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .login-title {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 2.8em;
+      font-weight: 800;
+      background: linear-gradient(45deg, #00f5ff, #ff00aa, #9d00ff, #00ff88);
+      background-size: 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: holo 8s ease infinite;
+      letter-spacing: 4px;
+      text-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+    }
+    @keyframes holo {
+      0% { background-position: 0%; }
+      100% { background-position: 300%; }
+    }
+
+    .login-subtitle {
+      color: #00f5ff;
+      margin: 10px 0 25px;
+      font-size: 1.1em;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(0, 245, 255, 0.6);
+    }
+
+    .login-input {
+      width: 100%;
+      padding: 16px;
+      margin: 15px 0;
+      border: 2px solid transparent;
+      border-radius: 16px;
+      background: rgba(0, 245, 255, 0.1);
+      color: #fff;
+      font-size: 1.1em;
+      font-family: 'Rajdhani', sans-serif;
+      transition: all 0.4s;
+    }
+    .login-input:focus {
+      outline: none;
+      border: 2px solid var(--neon);
+      box-shadow: 0 0 30px rgba(0, 245, 255, 0.6);
+      background: rgba(0, 245, 255, 0.2);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(45deg, #00f5ff, #ff00aa);
+      color: #000;
+      border: none;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 1.3em;
+      cursor: pointer;
+      letter-spacing: 2px;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      transition: all 0.5s;
+      margin-top: 10px;
+      box-shadow: 0 0 30px rgba(0, 245, 255, 0.5);
+    }
+    .login-btn::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: 0.7s;
+    }
+    .login-btn:hover::before {
+      left: 100%;
+    }
+    .login-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 0 50px rgba(255, 0, 170, 0.7);
+    }
+
+    .telegram-login-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(45deg, #0088cc, #00aaff);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 1.3em;
+      margin-top: 20px;
+      transition: 0.4s;
+      box-shadow: 0 0 30px rgba(0, 136, 204, 0.6);
+    }
+    .telegram-login-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 50px rgba(0, 170, 255, 0.9);
+    }
+
+    .error-msg {
+      color: #ff00aa;
+      margin-top: 12px;
+      font-weight: 700;
+      display: none;
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
 
     /* Main Page */
-    .main-container { display:none; width:100%; max-width:800px; }
-    .header { text-align:center; margin-bottom:16px; }
-    .title { font-size:2.2em; font-weight:bold; background:linear-gradient(45deg,#ff6b35,#f7931e); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px; }
-    .social-buttons { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:12px 0; }
-    .btn { padding:10px 16px; border-radius:20px; color:#fff; text-decoration:none; font-weight:bold; display:flex; align-items:center; gap:6px; font-size:0.9em; transition:0.2s; }
-    .btn.telegram { background:#0088cc; }
-    .btn.youtube { background:#ff0000; }
-    .btn.facebook { background:#1877f2; }
-    .btn.solo { background:#e91e63; }
-    .btn:hover { transform:scale(1.03); }
+    .main-container {
+      display: none;
+      width: 100%;
+      max-width: 1000px;
+      padding: 25px;
+    }
 
-    .tab-container { display:flex; justify-content:center; gap:8px; margin:16px 0; }
-    .tab-btn { padding:10px 20px; background:#eee; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.9em; transition:0.2s; }
-    .tab-btn.active { background:#3498db; color:#fff; }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .title {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 3.5em;
+      font-weight: 800;
+      background: linear-gradient(45deg, #00f5ff, #ff00aa, #9d00ff, #00ff88);
+      background-size: 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: holo 6s ease infinite;
+      letter-spacing: 5px;
+      text-shadow: 0 0 30px rgba(0, 245, 255, 0.6);
+    }
 
-    .form-section { background:#fff; padding:16px; border-radius:12px; box-shadow:0 3px 10px rgba(0,0,0,0.08); margin-bottom:16px; }
-    .input-group { margin-bottom:10px; }
-    .input-group label { display:block; margin-bottom:4px; font-weight:600; color:#444; font-size:0.9em; }
-    .input-group input { width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:0.95em; }
-    .result-section { margin:16px 0; }
-    .result-section h3 { margin-bottom:8px; color:#444; font-size:1em; }
-    .result-box { padding:12px; border-radius:10px; font-weight:bold; text-align:center; background:#2c3e50; color:#fff; font-size:0.9em; }
-    .result-box.success { background:#27ae60; }
-    .result-box.error { background:#e74c3c; }
+    .telegram-main-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      width: 100%;
+      max-width: 500px;
+      margin: 25px auto;
+      padding: 20px;
+      background: linear-gradient(45deg, #0088cc, #00aaff);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 24px;
+      font-weight: 700;
+      font-size: 1.4em;
+      transition: 0.5s;
+      box-shadow: 0 0 40px rgba(0, 136, 204, 0.7);
+    }
+    .telegram-main-btn:hover {
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 0 60px rgba(0, 170, 255, 1);
+    }
 
-    .emote-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:12px; }
-    .emote-card { background:#fff; border-radius:12px; padding:10px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.08); transition:transform 0.2s; }
-    .emote-card:hover { transform:translateY(-3px); }
-    .emote-card img { width:60px; height:60px; object-fit:contain; margin-bottom:6px; border-radius:6px; }
-    .emote-name { font-weight:bold; color:#333; font-size:0.8em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .emote-id { color:#777; font-size:0.7em; margin:3px 0; }
-    .send-btn { width:100%; padding:8px; background:#3498db; color:#fff; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.8em; transition:0.2s; }
-    .send-btn:hover { background:#2980b9; }
+    .tab-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    .tab-btn {
+      flex: 1;
+      max-width: 220px;
+      padding: 16px 20px;
+      background: rgba(0, 245, 255, 0.1);
+      border: 2px solid var(--neon);
+      border-radius: 50px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #fff;
+      transition: all 0.4s;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      font-size: 1.1em;
+    }
+    .tab-btn.active {
+      background: linear-gradient(45deg, #00f5ff, #ff00aa);
+      color: #000;
+      box-shadow: 0 0 35px rgba(0, 245, 255, 0.8);
+    }
 
-    .logout-btn { position:fixed; top:12px; right:12px; background:#e74c3c; color:#fff; padding:8px 12px; border-radius:50px; font-weight:bold; cursor:pointer; font-size:0.8em; z-index:1000; }
+    .form-section {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 0 40px rgba(0, 245, 255, 0.2);
+      margin-bottom: 25px;
+      border: 1px solid var(--border);
+    }
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 700;
+      color: #00f5ff;
+      font-size: 1em;
+      text-shadow: 0 0 10px rgba(0, 245, 255, 0.6);
+    }
+    .input-group input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid transparent;
+      border-radius: 14px;
+      background: rgba(0, 245, 255, 0.1);
+      color: #fff;
+      font-size: 1em;
+      transition: 0.4s;
+    }
+    .input-group input:focus {
+      outline: none;
+      border: 2px solid var(--neon);
+      box-shadow: 0 0 25px rgba(0, 245, 255, 0.5);
+      background: rgba(0, 245, 255, 0.2);
+    }
 
-    @media (max-width:600px) { 
-      .social-buttons, .tab-container { flex-direction:column; align-items:center; }
-      .emote-grid { grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); }
+    .result-section h3 {
+      margin-bottom: 10px;
+      color: #ccc;
+      font-weight: 700;
+    }
+    .result-box {
+      padding: 16px;
+      border-radius: 16px;
+      font-weight: 700;
+      text-align: center;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      font-size: 1em;
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+    }
+    .result-box.success { 
+      background: linear-gradient(45deg, #00ff88, #00f5ff); 
+      color: #000;
+      animation: successPulse 1.5s infinite;
+    }
+    @keyframes successPulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.6); }
+      50% { box-shadow: 0 0 40px rgba(0, 255, 136, 1); }
+    }
+
+    .emote-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 20px;
+    }
+    .emote-card {
+      background: var(--glass);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(0, 245, 255, 0.2);
+      transition: all 0.5s;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .emote-card::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: radial-gradient(circle, rgba(0,245,255,0.3), transparent);
+      opacity: 0;
+      transition: 0.6s;
+    }
+    .emote-card:hover::before {
+      opacity: 1;
+      transform: scale(1.5);
+    }
+    .emote-card:hover {
+      transform: translateY(-12px) rotateX(5deg) rotateY(5deg);
+      box-shadow: 0 0 60px rgba(0, 245, 255, 0.6);
+    }
+    .emote-card img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      margin-bottom: 10px;
+      border-radius: 14px;
+      border: 2px solid var(--neon);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+    }
+    .emote-name {
+      font-weight: 700;
+      color: #00f5ff;
+      font-size: 0.9em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-shadow: 0 0 10px rgba(0, 245, 255, 0.6);
+    }
+    .emote-id {
+      color: #ff00aa;
+      font-size: 0.75em;
+      margin: 5px 0;
+    }
+
+    .send-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(45deg, #ff00aa, #9d00ff);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.9em;
+      margin-top: 10px;
+      position: relative;
+      overflow: hidden;
+      transition: 0.4s;
+    }
+    .send-btn::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 0; height: 0;
+      background: rgba(255,255,255,0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: 0.6s;
+    }
+    .send-btn.sending::after {
+      width: 200px; height: 200px;
+    }
+    .send-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 30px rgba(255, 0, 170, 0.7);
+    }
+
+    .logout-btn {
+      position: fixed;
+      top: 25px;
+      right: 25px;
+      background: linear-gradient(45deg, #ff00aa, #9d00ff);
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 50px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.9em;
+      z-index: 1000;
+      box-shadow: 0 0 30px rgba(255, 0, 170, 0.5);
+      transition: 0.4s;
+    }
+    .logout-btn:hover {
+      transform: rotate(360deg) scale(1.1);
+    }
+
+    @media (max-width: 600px) {
+      .title { font-size: 2.5em; }
+      .telegram-main-btn { font-size: 1.2em; padding: 16px; }
+      .tab-container { flex-direction: column; gap: 15px; }
+      .tab-btn { max-width: 100%; }
+      .emote-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
     }
   </style>
 </head>
 <body>
 
+  <canvas id="particles"></canvas>
+
   <!-- Login Page -->
   <div id="loginPage" class="login-container">
-    <h1 class="login-title">AL AMIN EMOTE SERVER</h1>
-    <input type="password" id="passwordInput" class="login-input" placeholder="Enter Password" />
-    <button id="loginBtn" class="login-btn">Login</button>
-    <p id="errorMsg" class="error-msg">Wrong Password!</p>
+    <h1 class="login-title">AL AMIN</h1>
+    <p class="login-subtitle">ULTRA EMOTE SERVER</p>
+    <input type="password" id="passwordInput" class="login-input" placeholder="ENTER PREMIUM KEY" />
+    <button id="loginBtn" class="login-btn">ACCESS SYSTEM</button>
+    <p id="errorMsg" class="error-msg">ACCESS DENIED</p>
     <a href="https://t.me/alamin_emote_server" target="_blank" class="telegram-login-btn">
-      Join Telegram
+      JOIN ELITE GROUP
     </a>
   </div>
 
   <!-- Main Page -->
   <div id="mainPage" class="main-container">
-    <button class="logout-btn" onclick="logout()">Logout</button>
+    <button class="logout-btn" onclick="logout()">LOGOUT</button>
 
     <header class="header">
       <h1 class="title">AL AMIN EMOTE SERVER</h1>
-      <div class="social-buttons">
-        <a href="https://t.me/alamin_emote_server" target="_blank" class="btn telegram">Join Telegram</a>
-        <a href="#" target="_blank" class="btn youtube">YouTube</a>
-        <a href="#" target="_blank" class="btn facebook">Facebook</a>
-        <a href="#" target="_blank" class="btn solo">Solo Bot</a>
+      
+      <!-- Telegram Button - Full Width & Fat -->
+      <a href="https://t.me/alamin_emote_server" target="_blank" class="telegram-main-btn">
+        TELEGRAM GROUP
+      </a>
+
+      <!-- Tabs - Side by Side -->
+      <div class="tab-container">
+        <button id="all-tab" class="tab-btn active">ALL EMOTES</button>
+        <button id="evo-tab" class="tab-btn">EVO SERIES</button>
       </div>
     </header>
-
-    <div class="tab-container">
-      <button id="all-tab" class="tab-btn active">All</button>
-      <button id="evo-tab" class="tab-btn">Evo</button>
-    </div>
 
     <section class="form-section">
       <div class="input-group"><label>Team Code:</label><input type="text" id="teamCode" placeholder="Optional"></div>
@@ -114,29 +479,7 @@
     const CURRENT_PASSWORD = "alaminemote";
     const FAST_API_URL = "https://emote-psi.vercel.app/api/fastemote";
 
-    // Login
-    document.getElementById('loginBtn').onclick = () => {
-      const val = document.getElementById('passwordInput').value.trim();
-      if (val === CURRENT_PASSWORD) {
-        document.getElementById('loginPage').style.display = 'none';
-        document.getElementById('mainPage').style.display = 'block';
-        showTab('all');
-      } else {
-        const err = document.getElementById('errorMsg');
-        err.style.display = 'block';
-        setTimeout(() => err.style.display = 'none', 2000);
-      }
-    };
-
-    document.getElementById('passwordInput').onkeypress = e => e.key === 'Enter' && document.getElementById('loginBtn').click();
-
-    function logout() {
-      document.getElementById('loginPage').style.display = 'block';
-      document.getElementById('mainPage').style.display = 'none';
-      document.getElementById('passwordInput').value = '';
-    }
-
-    // === 135+ Emotes (Full List) ===
+    // === FULL EMOTES LIST (135+ from your original) ===
     const emotes = [
       {"id":"909051014","name":"puffy ride","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051014.png"},
       {"id":"909050009","name":"(circle)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050009.png"},
@@ -193,7 +536,6 @@
       {"id":"909038012","name":"(evo g18)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909038012.png"},
       {"id":"909035012","name":"(evo AN94)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035012.png"},
       {"id":"909042008","name":"(evo Woodpecker)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909042008.png"},
-      // === 85+ Missing Emotes ===
       {"id":"909034013","name":"CS-Ranked Master Emote","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909034013.png"},
       {"id":"909034014","name":"Yes, I do","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909034014.png"},
       {"id":"909035001","name":"Free Money!","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035001.png"},
@@ -281,6 +623,89 @@
       {"id":"909001124","name":"Golden Combo","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909001124.png"}
     ];
 
+    // Particle Background
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 1;
+        this.speedX = Math.random() * 1 - 0.5;
+        this.speedY = Math.random() * 1 - 0.5;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+      }
+      draw() {
+        ctx.fillStyle = 'rgba(0, 245, 255, 0.8)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 100; i++) {
+      particles.push(new Particle());
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Sound Effect
+    const clickSound = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA');
+
+    // Login
+    document.getElementById('loginBtn').onclick = () => {
+      clickSound.play();
+      const val = document.getElementById('passwordInput').value.trim();
+      if (val === CURRENT_PASSWORD) {
+        document.getElementById('loginPage').style.opacity = '0';
+        setTimeout(() => {
+          document.getElementById('loginPage').style.display = 'none';
+          document.getElementById('mainPage').style.display = 'block';
+          document.getElementById('mainPage').style.opacity = '1';
+          showTab('all');
+        }, 500);
+      } else {
+        const err = document.getElementById('errorMsg');
+        err.style.display = 'block';
+        setTimeout(() => err.style.display = 'none', 2000);
+      }
+    };
+
+    document.getElementById('passwordInput').onkeypress = e => e.key === 'Enter' && document.getElementById('loginBtn').click();
+
+    function logout() {
+      clickSound.play();
+      document.getElementById('mainPage').style.opacity = '0';
+      setTimeout(() => {
+        document.getElementById('mainPage').style.display = 'none';
+        document.getElementById('loginPage').style.display = 'block';
+        document.getElementById('loginPage').style.opacity = '1';
+        document.getElementById('passwordInput').value = '';
+      }, 500);
+    }
+
     const grid = document.getElementById('grid');
     let currentList = [];
 
@@ -301,10 +726,10 @@
         const card = document.createElement('div');
         card.className = 'emote-card';
         card.innerHTML = `
-          <img data-src="${emote.img}" alt="${emote.name}" onerror="this.src='https://via.placeholder.com/60/333/fff?text=?'" loading="lazy">
+          <img data-src="${emote.img}" alt="${emote.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/80/333/fff?text=?'">
           <div class="emote-name">${emote.name}</div>
           <div class="emote-id">ID: ${emote.id}</div>
-          <button class="send-btn" data-id="${emote.id}">Send</button>
+          <button class="send-btn" data-id="${emote.id}">SEND</button>
         `;
         fragment.appendChild(card);
       });
@@ -320,11 +745,15 @@
 
     grid.addEventListener('click', e => {
       if (e.target.classList.contains('send-btn')) {
-        sendEmote(e.target.dataset.id);
+        clickSound.play();
+        const btn = e.target;
+        btn.classList.add('sending');
+        sendEmote(btn.dataset.id).finally(() => {
+          setTimeout(() => btn.classList.remove('sending'), 1000);
+        });
       }
     });
 
-    // === Fixed Fast Emote Send (GET + CORS Bypass) ===
     async function sendEmote(id) {
       const u1 = document.getElementById('uid1').value.trim();
       if (!u1) return showResult("UID 1 required!", "error");
@@ -353,7 +782,6 @@
 
         if (res.ok && data.status === "success") {
           showResult(`Sent ${id}!`, "success");
-          showNotif("ইমোট পাঠানো হয়েছে!");
         } else {
           showResult(data.message || "Failed!", "error");
         }
@@ -368,17 +796,8 @@
       box.className = `result-box ${type}`;
     }
 
-    function showNotif(msg) {
-      const n = document.createElement('div');
-      n.textContent = msg;
-      n.style.cssText = 'position:fixed;bottom:16px;right:16px;background:#27ae60;color:#fff;padding:10px 20px;border-radius:50px;font-weight:bold;z-index:10000;opacity:0;transition:0.3s';
-      document.body.appendChild(n);
-      setTimeout(() => n.style.opacity = '1', 50);
-      setTimeout(() => { n.style.opacity = '0'; setTimeout(() => n.remove(), 300); }, 1800);
-    }
-
     document.getElementById('all-tab').onclick = () => showTab('all');
     document.getElementById('evo-tab').onclick = () => showTab('evo');
   </script>
 </body>
-    </html>
+</html>
