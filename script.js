@@ -1,4 +1,38 @@
-// script.js - 100% Working Send + Tabs + Notification
+// script.js - Login + Full Features
+
+// Default Password (Change it anytime)
+let CURRENT_PASSWORD = "alamin123"; // আপনি চাইলে এটা চেঞ্জ করতে পারবেন
+
+// Login System
+document.getElementById('loginBtn').addEventListener('click', () => {
+  const input = document.getElementById('passwordInput').value;
+  const error = document.getElementById('errorMsg');
+
+  if (input === CURRENT_PASSWORD) {
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('mainPage').style.display = 'block';
+    showTab('all'); // Load emotes
+  } else {
+    error.textContent = "Wrong Password!";
+  }
+});
+
+// Logout
+function logout() {
+  document.getElementById('loginPage').style.display = 'block';
+  document.getElementById('mainPage').style.display = 'none';
+  document.getElementById('passwordInput').value = '';
+  document.getElementById('errorMsg').textContent = '';
+}
+
+// Change Password (Call from browser console or add button later)
+function changePassword(newPass) {
+  CURRENT_PASSWORD = newPass;
+  alert("Password changed to: " + newPass);
+}
+// Example: changePassword("newpass123");
+
+// Emotes List
 const emotes = [
   {"id":"909051014","name":"puffy ride","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051014.png"},
   {"id":"909050009","name":"(circle)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050009.png"},
@@ -59,7 +93,6 @@ const emotes = [
 
 const API_URL = "https://emote-psi.vercel.app/api/join";
 
-// ট্যাব সুইচ
 function showTab(tab) {
   const allBtn = document.getElementById('all-tab');
   const evoBtn = document.getElementById('evo-tab');
@@ -76,7 +109,6 @@ function showTab(tab) {
   }
 }
 
-// ইমোট রেন্ডার + Send বাটন লিসেনার
 function renderEmotes(list) {
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
@@ -93,7 +125,6 @@ function renderEmotes(list) {
     grid.appendChild(card);
   });
 
-  // Send বাটনে ক্লিক লিসেনার
   document.querySelectorAll('.send-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       const id = this.getAttribute('data-id');
@@ -102,7 +133,6 @@ function renderEmotes(list) {
   });
 }
 
-// সেন্ড ফাংশন
 async function sendEmote(id) {
   const tc = document.getElementById('teamCode').value.trim();
   const u1 = document.getElementById('uid1').value.trim();
@@ -125,7 +155,7 @@ async function sendEmote(id) {
       showResult("Failed: Server error.", "error");
     }
   } catch (err) {
-    showResult("Network error. Check internet.", "error");
+    showResult("Network error.", "error");
   }
 }
 
@@ -138,20 +168,8 @@ function showResult(msg, type) {
 function showNotif(msg) {
   const notif = document.createElement('div');
   notif.textContent = msg;
-  notif.style.cssText = `
-    position:fixed; bottom:20px; right:20px; background:#27ae60; color:#fff; 
-    padding:12px 24px; border-radius:50px; font-weight:bold; z-index:10000;
-    opacity:0; transition:opacity 0.4s;
-  `;
+  notif.style.cssText = `position:fixed; bottom:20px; right:20px; background:#27ae60; color:#fff; padding:12px 24px; border-radius:50px; font-weight:bold; z-index:10000; opacity:0; transition:opacity 0.4s;`;
   document.body.appendChild(notif);
   setTimeout(() => notif.style.opacity = '1', 100);
-  setTimeout(() => {
-    notif.style.opacity = '0';
-    setTimeout(() => document.body.removeChild(notif), 400);
-  }, 2000);
+  setTimeout(() => { notif.style.opacity = '0'; setTimeout(() => document.body.removeChild(notif), 400); }, 2000);
 }
-
-// লোড হওয়ার সাথে All ট্যাব
-window.onload = () => {
-  showTab('all');
-};
