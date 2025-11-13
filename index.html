@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MASTER - Emote Sender</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+  <!-- হেডার -->
+  <header class="header">
+    <h1 class="title">MASTER EMOTE SERVER</h1>
+    <div class="social-buttons">
+      <a href="#" class="btn telegram"><i class="fab fa-telegram"></i> Join Telegram</a>
+      <a href="#" class="btn youtube"><i class="fab fa-youtube"></i> Subscribe YouTube</a>
+      <a href="#" class="btn facebook"><i class="fab fa-facebook"></i> Follow Facebook</a>
+      <a href="#" class="btn solo">Solo Bot</a>
+    </div>
+  </header>
+
+  <!-- ফর্ম -->
+  <section class="form-section">
+    <div class="input-group">
+      <label><i class="fas fa-users"></i> Team Code:</label>
+      <input type="text" id="teamCode" placeholder="Enter team code" />
+    </div>
+    <div class="input-group">
+      <label><i class="fas fa-user"></i> UID 1:</label>
+      <input type="text" id="uid1" placeholder="Required" class="required" />
+    </div>
+    <div class="input-group">
+      <label><i class="fas fa-user"></i> UID 2:</label>
+      <input type="text" id="uid2" placeholder="Optional" />
+    </div>
+    <div class="input-group">
+      <label><i class="fas fa-user"></i> UID 3:</label>
+      <input type="text" id="uid3" placeholder="Optional" />
+    </div>
+    <div class="input-group">
+      <label><i class="fas fa-user"></i> UID 4:</label>
+      <input type="text" id="uid4" placeholder="Optional" />
+    </div>
+  </section>
+
+  <!-- রেজাল্ট -->
+  <section class="result-section">
+    <h3>Result:</h3>
+    <div id="resultBox" class="result-box">
+      Ready. Fill in the details and send an emote.
+    </div>
+  </section>
+
+  <!-- ইমোট গ্রিড -->
+  <section class="emote-grid" id="grid"></section>
+
+  <!-- নোটিফিকেশন -->
+  <div id="notif" class="notif">সেন্ড সফল!</div>
+
+  <!-- JS লিংক -->
+  <script src="script.js"></script>
+</body>
+</html>
