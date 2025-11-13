@@ -7,61 +7,59 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Segoe UI',sans-serif; background:#f8f9fa; color:#333; padding:15px; line-height:1.4; display:flex; justify-content:center; align-items:center; min-height:100vh; }
+    body { font-family:'Segoe UI',sans-serif; background:#f0f2f5; color:#333; padding:10px; line-height:1.4; display:flex; justify-content:center; align-items:center; min-height:100vh; }
     
     /* Login Page */
-    .login-container { background:#fff; padding:40px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.2); text-align:center; width:100%; max-width:400px; }
-    .login-title { font-size:2em; font-weight:bold; background:linear-gradient(45deg,#ff6b35,#f7931e); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:20px; }
-    .login-input { width:100%; padding:15px; margin:15px 0; border:1px solid #ddd; border-radius:10px; font-size:1em; }
-    .login-btn { width:100%; padding:15px; background:#3498db; color:#fff; border:none; border-radius:10px; font-weight:bold; cursor:pointer; transition:0.3s; margin:10px 0; }
+    .login-container { background:#fff; padding:30px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); text-align:center; width:100%; max-width:360px; }
+    .login-title { font-size:1.8em; font-weight:bold; background:linear-gradient(45deg,#ff6b35,#f7931e); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:16px; }
+    .login-input { width:100%; padding:12px; margin:12px 0; border:1px solid #ddd; border-radius:8px; font-size:1em; }
+    .login-btn { width:100%; padding:12px; background:#3498db; color:#fff; border:none; border-radius:8px; font-weight:bold; cursor:pointer; transition:background 0.2s; }
     .login-btn:hover { background:#2980b9; }
-    .error-msg { color:#e74c3c; margin-top:10px; font-weight:bold; display:none; }
-
-    /* Telegram Button in Login */
-    .telegram-login-btn {
-      display:inline-flex; align-items:center; justify-content:center; gap:10px;
-      width:100%; padding:15px; background:#0088cc; color:#fff; text-decoration:none;
-      border-radius:10px; font-weight:bold; font-size:1em; margin-top:15px; transition:0.3s;
-    }
-    .telegram-login-btn:hover { background:#006699; transform:scale(1.02); }
+    .error-msg { color:#e74c3c; margin-top:8px; font-weight:bold; display:none; }
+    .telegram-login-btn { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:12px; background:#0088cc; color:#fff; text-decoration:none; border-radius:8px; font-weight:bold; margin-top:12px; transition:0.2s; }
+    .telegram-login-btn:hover { background:#006699; }
 
     /* Main Page */
     .main-container { display:none; width:100%; max-width:800px; }
-    .header { text-align:center; margin-bottom:20px; }
-    .title { font-size:2.5em; font-weight:bold; background:linear-gradient(45deg,#ff6b35,#f7931e); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:10px; }
-    .social-buttons { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:15px 0; }
-    .btn { padding:12px 18px; border-radius:25px; color:#fff; text-decoration:none; font-weight:bold; display:flex; align-items:center; gap:8px; transition:0.3s; }
+    .header { text-align:center; margin-bottom:16px; }
+    .title { font-size:2.2em; font-weight:bold; background:linear-gradient(45deg,#ff6b35,#f7931e); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px; }
+    .social-buttons { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:12px 0; }
+    .btn { padding:10px 16px; border-radius:20px; color:#fff; text-decoration:none; font-weight:bold; display:flex; align-items:center; gap:6px; font-size:0.9em; transition:0.2s; }
     .btn.telegram { background:#0088cc; }
     .btn.youtube { background:#ff0000; }
     .btn.facebook { background:#1877f2; }
     .btn.solo { background:#e91e63; }
-    .btn:hover { transform:scale(1.05); box-shadow:0 5px 15px rgba(0,0,0,0.2); }
+    .btn:hover { transform:scale(1.03); }
 
-    .tab-container { display:flex; justify-content:center; gap:10px; margin:20px 0; }
-    .tab-btn { padding:12px 24px; background:#eee; border:none; border-radius:10px; font-weight:bold; cursor:pointer; transition:0.3s; }
+    .tab-container { display:flex; justify-content:center; gap:8px; margin:16px 0; }
+    .tab-btn { padding:10px 20px; background:#eee; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.9em; transition:0.2s; }
     .tab-btn.active { background:#3498db; color:#fff; }
 
-    .form-section { background:#fff; padding:20px; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.1); margin-bottom:20px; }
-    .input-group { margin-bottom:12px; }
-    .input-group label { display:block; margin-bottom:5px; font-weight:600; color:#444; }
-    .input-group input { width:100%; padding:12px; border:1px solid #ddd; border-radius:10px; font-size:1em; }
-    .input-group input.required { border-color:#ff6b6b; }
-    .result-section { margin:20px 0; }
-    .result-section h3 { margin-bottom:10px; color:#444; }
-    .result-box { padding:15px; border-radius:12px; font-weight:bold; text-align:center; background:#2c3e50; color:#fff; }
+    .form-section { background:#fff; padding:16px; border-radius:12px; box-shadow:0 3px 10px rgba(0,0,0,0.08); margin-bottom:16px; }
+    .input-group { margin-bottom:10px; }
+    .input-group label { display:block; margin-bottom:4px; font-weight:600; color:#444; font-size:0.9em; }
+    .input-group input { width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:0.95em; }
+    .result-section { margin:16px 0; }
+    .result-section h3 { margin-bottom:8px; color:#444; font-size:1em; }
+    .result-box { padding:12px; border-radius:10px; font-weight:bold; text-align:center; background:#2c3e50; color:#fff; font-size:0.9em; }
     .result-box.success { background:#27ae60; }
     .result-box.error { background:#e74c3c; }
-    .emote-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:15px; }
-    .emote-card { background:#fff; border-radius:15px; padding:12px; text-align:center; box-shadow:0 5px 15px rgba(0,0,0,0.1); transition:0.3s; }
-    .emote-card:hover { transform:translateY(-5px); }
-    .emote-card img { width:70px; height:70px; object-fit:contain; margin-bottom:8px; border-radius:8px; }
-    .emote-name { font-weight:bold; color:#333; font-size:0.9em; }
-    .emote-id { color:#777; font-size:0.8em; margin:4px 0; }
-    .send-btn { width:100%; padding:10px; background:#3498db; color:#fff; border:none; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:8px; transition:0.3s; }
+
+    .emote-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:12px; }
+    .emote-card { background:#fff; border-radius:12px; padding:10px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.08); transition:transform 0.2s; }
+    .emote-card:hover { transform:translateY(-3px); }
+    .emote-card img { width:60px; height:60px; object-fit:contain; margin-bottom:6px; border-radius:6px; }
+    .emote-name { font-weight:bold; color:#333; font-size:0.8em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .emote-id { color:#777; font-size:0.7em; margin:3px 0; }
+    .send-btn { width:100%; padding:8px; background:#3498db; color:#fff; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.8em; transition:0.2s; }
     .send-btn:hover { background:#2980b9; }
 
-    .logout-btn { position:fixed; top:20px; right:20px; background:#e74c3c; color:#fff; padding:10px 15px; border-radius:50px; font-weight:bold; cursor:pointer; z-index:1000; }
-    @media (max-width:600px) { .social-buttons { flex-direction:column; align-items:center; } .tab-container { flex-direction:column; } }
+    .logout-btn { position:fixed; top:12px; right:12px; background:#e74c3c; color:#fff; padding:8px 12px; border-radius:50px; font-weight:bold; cursor:pointer; font-size:0.8em; z-index:1000; }
+
+    @media (max-width:600px) { 
+      .social-buttons, .tab-container { flex-direction:column; align-items:center; }
+      .emote-grid { grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); }
+    }
   </style>
 </head>
 <body>
@@ -72,10 +70,8 @@
     <input type="password" id="passwordInput" class="login-input" placeholder="Enter Password" />
     <button id="loginBtn" class="login-btn">Login</button>
     <p id="errorMsg" class="error-msg">Wrong Password!</p>
-
-    <!-- Telegram Button in Login Page -->
     <a href="https://t.me/alamin_emote_server" target="_blank" class="telegram-login-btn">
-      <i class="fab fa-telegram-plane"></i> Join Telegram Channel
+      Join Telegram
     </a>
   </div>
 
@@ -87,90 +83,61 @@
       <h1 class="title">AL AMIN EMOTE SERVER</h1>
       <div class="social-buttons">
         <a href="https://t.me/alamin_emote_server" target="_blank" class="btn telegram">Join Telegram</a>
-        <a href="#" target="_blank" class="btn youtube">Subscribe YouTube</a>
-        <a href="#" target="_blank" class="btn facebook">Follow Facebook</a>
+        <a href="#" target="_blank" class="btn youtube">YouTube</a>
+        <a href="#" target="_blank" class="btn facebook">Facebook</a>
         <a href="#" target="_blank" class="btn solo">Solo Bot</a>
       </div>
     </header>
 
     <div class="tab-container">
-      <button id="all-tab" class="tab-btn active">All Emotes</button>
-      <button id="evo-tab" class="tab-btn">Evo Only</button>
+      <button id="all-tab" class="tab-btn active">All</button>
+      <button id="evo-tab" class="tab-btn">Evo</button>
     </div>
 
     <section class="form-section">
-      <div class="input-group">
-        <label>Team Code:</label>
-        <input type="text" id="teamCode" placeholder="Enter team code" />
-      </div>
-      <div class="input-group">
-        <label>UID 1:</label>
-        <input type="text" id="uid1" placeholder="Required" class="required" />
-      </div>
-      <div class="input-group">
-        <label>UID 2:</label>
-        <input type="text" id="uid2" placeholder="Optional" />
-      </div>
-      <div class="input-group">
-        <label>UID 3:</label>
-        <input type="text" id="uid3" placeholder="Optional" />
-      </div>
-      <div class="input-group">
-        <label>UID 4:</label>
-        <input type="text" id="uid4" placeholder="Optional" />
-      </div>
+      <div class="input-group"><label>Team Code:</label><input type="text" id="teamCode" placeholder="Optional"></div>
+      <div class="input-group"><label>UID 1:</label><input type="text" id="uid1" placeholder="Required" class="required"></div>
+      <div class="input-group"><label>UID 2:</label><input type="text" id="uid2" placeholder="Optional"></div>
+      <div class="input-group"><label>UID 3:</label><input type="text" id="uid3" placeholder="Optional"></div>
+      <div class="input-group"><label>UID 4:</label><input type="text" id="uid4" placeholder="Optional"></div>
     </section>
 
     <section class="result-section">
       <h3>Result:</h3>
-      <div id="resultBox" class="result-box">
-        Ready. Fill in the details and send an emote.
-      </div>
+      <div id="resultBox" class="result-box">Ready to send emote.</div>
     </section>
 
     <section class="emote-grid" id="grid"></section>
   </div>
 
-  <!-- JS (Inline - 100% Working) -->
+  <!-- Full JS with 135+ Emotes -->
   <script>
-    // Default Password
     const CURRENT_PASSWORD = "alamin123";
+    const API_URL = "https://emote-psi.vercel.app/api/join";
 
     // Login
-    document.getElementById('loginBtn').addEventListener('click', () => {
-      const input = document.getElementById('passwordInput').value.trim();
-      const error = document.getElementById('errorMsg');
-
-      if (input === CURRENT_PASSWORD) {
+    document.getElementById('loginBtn').onclick = () => {
+      const val = document.getElementById('passwordInput').value.trim();
+      if (val === CURRENT_PASSWORD) {
         document.getElementById('loginPage').style.display = 'none';
         document.getElementById('mainPage').style.display = 'block';
         showTab('all');
       } else {
-        error.style.display = 'block';
-        setTimeout(() => error.style.display = 'none', 3000);
+        const err = document.getElementById('errorMsg');
+        err.style.display = 'block';
+        setTimeout(() => err.style.display = 'none', 2000);
       }
-    });
+    };
 
-    // Enter Key
-    document.getElementById('passwordInput').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') document.getElementById('loginBtn').click();
-    });
+    document.getElementById('passwordInput').onkeypress = e => e.key === 'Enter' && document.getElementById('loginBtn').click();
 
-    // Logout
     function logout() {
       document.getElementById('loginPage').style.display = 'block';
       document.getElementById('mainPage').style.display = 'none';
       document.getElementById('passwordInput').value = '';
-      document.getElementById('errorMsg').style.display = 'none';
     }
 
-    // Change Password (Console)
-    function changePassword(newPass) {
-      window.CURRENT_PASSWORD = newPass;
-      alert("Password changed to: " + newPass);
-    }
-
-    // Emotes Array
+    // All Emotes (Old + New 85)
     const emotes = [
       {"id":"909051014","name":"puffy ride","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051014.png"},
       {"id":"909050009","name":"(circle)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050009.png"},
@@ -226,51 +193,146 @@
       {"id":"909037011","name":"(evo fist)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037011.png"},
       {"id":"909038012","name":"(evo g18)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909038012.png"},
       {"id":"909035012","name":"(evo AN94)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035012.png"},
-      {"id":"909042008","name":"(evo Woodpecker)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909042008.png"}
+      {"id":"909042008","name":"(evo Woodpecker)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909042008.png"},
+      // === 85+ Missing Emotes Added Below ===
+      {"id":"909034013","name":"CS-Ranked Master Emote","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909034013.png"},
+      {"id":"909034014","name":"Yes, I do","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909034014.png"},
+      {"id":"909035001","name":"Free Money!","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035001.png"},
+      {"id":"909035005","name":"Victorious Eagle","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035005.png"},
+      {"id":"909035006","name":"Flying Saucer","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035006.png"},
+      {"id":"909035008","name":"Bobble Dance","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035008.png"},
+      {"id":"909036009","name":"Weight Training","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036009.png"},
+      {"id":"909036010","name":"Beautiful Love","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036010.png"},
+      {"id":"909036011","name":"Groove Moves","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036011.png"},
+      {"id":"909035013","name":"Louder Please","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035013.png"},
+      {"id":"909035014","name":"Ninja Stand","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035014.png"},
+      {"id":"909035015","name":"Creator In Action","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035015.png"},
+      {"id":"909036001","name":"Ghost Float","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036001.png"},
+      {"id":"909036002","name":"Shiba Surf","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036002.png"},
+      {"id":"909036003","name":"Waiter Walk","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036003.png"},
+      {"id":"909036004","name":"Graffiti Cameraman","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036004.png"},
+      {"id":"909036005","name":"Agile Boxer","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036005.png"},
+      {"id":"909036006","name":"Sunbathing","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036006.png"},
+      {"id":"909036008","name":"Skateboard Swag","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036008.png"},
+      {"id":"909036009","name":"Phantom Tamer","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036009.png"},
+      {"id":"909036010","name":"The Signal","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036010.png"},
+      {"id":"909036011","name":"Eternal Descent","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036011.png"},
+      {"id":"909036012","name":"Swaggy Dance","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036012.png"},
+      {"id":"909036014","name":"Admire","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036014.png"},
+      {"id":"909037001","name":"Reindeer Float","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037001.png"},
+      {"id":"909037002","name":"Bamboo Dance","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037002.png"},
+      {"id":"909037003","name":"Dance of Constellation","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037003.png"},
+      {"id":"909037004","name":"Trophy Grab","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037004.png"},
+      {"id":"909037005","name":"Starry Hands","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037005.png"},
+      {"id":"909037006","name":"Yumi","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037006.png"},
+      {"id":"909037007","name":"Happy Dancing","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037007.png"},
+      {"id":"909037008","name":"Juggle","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037008.png"},
+      {"id":"909037009","name":"Neon Sign","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037009.png"},
+      {"id":"909037010","name":"Beast Tease","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037010.png"},
+      {"id":"909037012","name":"Clap Dance","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037012.png"},
+      {"id":"909038001","name":"The Influencer","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909038001.png"},
+      {"id":"909038003","name":"Techno Blast","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909038003.png"},
+      {"id":"909038004","name":"Be My Valentine","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909038004.png"},
+      {"id":"909000002","name":"LOL","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000002.png"},
+      {"id":"909000003","name":"Provoke","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000003.png"},
+      {"id":"909000010","name":"Flowers of Love","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000010.png"},
+      {"id":"909000014","name":"FWC Throne","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000014.png"},
+      {"id":"909000032","name":"Selfie","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000032.png"},
+      {"id":"909000034","name":"Pirate's Flag","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000034.png"},
+      {"id":"909000036","name":"Top DJ","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000036.png"},
+      {"id":"909000038","name":"Power of money","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000038.png"},
+      {"id":"909000039","name":"Eat my dust","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000039.png"},
+      {"id":"909000041","name":"Kongfu","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000041.png"},
+      {"id":"909000045","name":"I heart you","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000045.png"},
+      {"id":"909000046","name":"Tea Time","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000046.png"},
+      {"id":"909000052","name":"Doggie","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000052.png"},
+      {"id":"909000055","name":"I'm Rich!","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000055.png"},
+      {"id":"909000056","name":"Make It Rain","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000056.png"},
+      {"id":"909000057","name":"Dust Off","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000057.png"},
+      {"id":"909000058","name":"Captain Booyah","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000058.png"},
+      {"id":"909000060","name":"BOOYAH!","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000060.png"},
+      {"id":"909000061","name":"Bhangra","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000061.png"},
+      {"id":"909000062","name":"Piece of Cake","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000062.png"},
+      {"id":"909000064","name":"I'm Saitama!","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000064.png"},
+      {"id":"909000065","name":"The Victor","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000065.png"},
+      {"id":"909000066","name":"Sit!","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000066.png"},
+      {"id":"909000067","name":"Obliteration","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000067.png"},
+      {"id":"909000069","name":"Top Scorer","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000069.png"},
+      {"id":"909000070","name":"Triple Kicks","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000070.png"},
+      {"id":"909000071","name":"Cobra Dance","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000071.png"},
+      {"id":"909000072","name":"Predator Pulse","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000072.png"},
+      {"id":"909000073","name":"Ground Punch","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000073.png"},
+      {"id":"909000074","name":"The Biker","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000074.png"},
+      {"id":"909000076","name":"One-Finger Pushup","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000076.png"},
+      {"id":"909000077","name":"Stage Time","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000077.png"},
+      {"id":"909000078","name":"Booyah! Balloon","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000078.png"},
+      {"id":"909000079","name":"More Practice","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000079.png"},
+      {"id":"909000080","name":"FFWS 2021","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000080.png"},
+      {"id":"909000086","name":"Mythos Four","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000086.png"},
+      {"id":"909000087","name":"Champion Grab","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000087.png"},
+      {"id":"909000088","name":"Win and Chill","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000088.png"},
+      {"id":"909000089","name":"Hadouken","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000089.png"},
+      {"id":"909000091","name":"Big Smash","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000091.png"},
+      {"id":"909000093","name":"All In Control","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000093.png"},
+      {"id":"909000094","name":"Debugging","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000094.png"},
+      {"id":"909000095","name":"Waggor Wave","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000095.png"},
+      {"id":"909000096","name":"Crazy Guitar","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000096.png"},
+      {"id":"909001121","name":"Dribble King","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909001121.png"},
+      {"id":"909001123","name":"Mind It!","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909001123.png"},
+      {"id":"909001124","name":"Golden Combo","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909001124.png"}
     ];
 
-    const API_URL = "https://emote-psi.vercel.app/api/join";
+    const grid = document.getElementById('grid');
+    let currentList = [];
 
     function showTab(tab) {
       const allBtn = document.getElementById('all-tab');
       const evoBtn = document.getElementById('evo-tab');
-      if (tab === 'all') {
-        allBtn.classList.add('active'); evoBtn.classList.remove('active');
-        renderEmotes(emotes);
-      } else {
-        evoBtn.classList.add('active'); allBtn.classList.remove('active');
-        renderEmotes(emotes.filter(e => e.name.toLowerCase().includes('evo')));
-      }
+      currentList = tab === 'all' ? emotes : emotes.filter(e => e.name.toLowerCase().includes('evo'));
+      allBtn.classList.toggle('active', tab === 'all');
+      evoBtn.classList.toggle('active', tab !== 'all');
+      grid.innerHTML = '';
+      renderChunk(0);
     }
 
-    function renderEmotes(list) {
-      const grid = document.getElementById('grid');
-      grid.innerHTML = '';
-      list.forEach(emote => {
+    function renderChunk(start) {
+      const chunk = currentList.slice(start, start + 12);
+      const fragment = document.createDocumentFragment();
+      chunk.forEach(emote => {
         const card = document.createElement('div');
         card.className = 'emote-card';
         card.innerHTML = `
-          <img src="${emote.img}" alt="${emote.name}" onerror="this.src='https://via.placeholder.com/80/333/fff?text=?'">
+          <img data-src="${emote.img}" alt="${emote.name}" onerror="this.src='https://via.placeholder.com/60/333/fff?text=?'" loading="lazy">
           <div class="emote-name">${emote.name}</div>
           <div class="emote-id">ID: ${emote.id}</div>
           <button class="send-btn" data-id="${emote.id}">Send</button>
         `;
-        grid.appendChild(card);
+        fragment.appendChild(card);
       });
-      document.querySelectorAll('.send-btn').forEach(btn => {
-        btn.onclick = () => sendEmote(btn.dataset.id);
+      grid.appendChild(fragment);
+      document.querySelectorAll('img[data-src]').forEach(img => {
+        img.src = img.dataset.src;
+        img.onload = () => img.removeAttribute('data-src');
       });
+      if (start + 12 < currentList.length) {
+        requestAnimationFrame(() => renderChunk(start + 12));
+      }
     }
 
+    grid.addEventListener('click', e => {
+      if (e.target.classList.contains('send-btn')) {
+        sendEmote(e.target.dataset.id);
+      }
+    });
+
     async function sendEmote(id) {
-      const tc = document.getElementById('teamCode').value.trim();
       const u1 = document.getElementById('uid1').value.trim();
-      if (!u1) return showResult("UID 1 is required!", "error");
-      const url = `${API_URL}?tc=${tc}&emote_id=${id}&uid1=${u1}&uid2=${document.getElementById('uid2').value.trim()}&uid3=${document.getElementById('uid3').value.trim()}&uid4=${document.getElementById('uid4').value.trim()}`;
+      if (!u1) return showResult("UID 1 required!", "error");
+      const url = `${API_URL}?tc=${document.getElementById('teamCode').value.trim()}&emote_id=${id}&uid1=${u1}&uid2=${document.getElementById('uid2').value.trim()}&uid3=${document.getElementById('uid3').value.trim()}&uid4=${document.getElementById('uid4').value.trim()}`;
       try {
         const res = await fetch(url);
-        showResult(res.ok ? `Emote ${id} sent!` : "Failed!", res.ok ? "success" : "error");
-        if (res.ok) showNotif("সেন্ড সফল!");
+        showResult(res.ok ? `Sent ${id}!` : "Failed!", res.ok ? "success" : "error");
+        if (res.ok) showNotif("Sent successfully!");
       } catch { showResult("Network error.", "error"); }
     }
 
@@ -283,13 +345,12 @@
     function showNotif(msg) {
       const n = document.createElement('div');
       n.textContent = msg;
-      n.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#27ae60;color:#fff;padding:12px 24px;border-radius:50px;font-weight:bold;z-index:10000;opacity:0;transition:0.4s';
+      n.style.cssText = 'position:fixed;bottom:16px;right:16px;background:#27ae60;color:#fff;padding:10px 20px;border-radius:50px;font-weight:bold;z-index:10000;opacity:0;transition:0.3s';
       document.body.appendChild(n);
-      setTimeout(() => n.style.opacity = '1', 100);
-      setTimeout(() => { n.style.opacity = '0'; setTimeout(() => n.remove(), 400); }, 2000);
+      setTimeout(() => n.style.opacity = '1', 50);
+      setTimeout(() => { n.style.opacity = '0'; setTimeout(() => n.remove(), 300); }, 1800);
     }
 
-    // Tab Buttons
     document.getElementById('all-tab').onclick = () => showTab('all');
     document.getElementById('evo-tab').onclick = () => showTab('evo');
   </script>
