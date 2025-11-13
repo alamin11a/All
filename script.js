@@ -1,4 +1,4 @@
-// script.js
+// script.js - 100% Working Send + Tabs
 const emotes = [
   {"id":"909051014","name":"puffy ride","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051014.png"},
   {"id":"909050009","name":"(circle)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050009.png"},
@@ -63,7 +63,6 @@ const API_URL = "https://emote-psi.vercel.app/api/join";
 function showTab(tab) {
   const allBtn = document.getElementById('all-tab');
   const evoBtn = document.getElementById('evo-tab');
-  const grid = document.getElementById('grid');
 
   if (tab === 'all') {
     allBtn.classList.add('active');
@@ -77,10 +76,11 @@ function showTab(tab) {
   }
 }
 
-// ইমোট রেন্ডার
+// ইমোট রেন্ডার + Send বাটন লিসেনার
 function renderEmotes(list) {
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
+
   list.forEach(emote => {
     const card = document.createElement('div');
     card.className = 'emote-card';
@@ -88,9 +88,17 @@ function renderEmotes(list) {
       <img src="${emote.img}" alt="${emote.name}" onerror="this.src='https://via.placeholder.com/80/333/fff?text=?'">
       <div class="emote-name">${emote.name}</div>
       <div class="emote-id">ID: ${emote.id}</div>
-      <button class="send-btn" onclick="sendEmote('${emote.id}')">Send</button>
+      <button class="send-btn" data-id="${emote.id}">Send</button>
     `;
     grid.appendChild(card);
+  });
+
+  // Send বাটনে ক্লিক লিসেনার যোগ করুন
+  document.querySelectorAll('.send-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const id = this.getAttribute('data-id');
+      sendEmote(id);
+    });
   });
 }
 
@@ -109,10 +117,15 @@ async function sendEmote(id) {
 
   const url = `${API_URL}?tc=${tc}&emote_id=${id}&uid1=${u1}&uid2=${u2}&uid3=${u3}&uid4=${u4}`;
   try {
-    await fetch(url);
-    showResult(`Emote ${id} sent successfully!`, "success");
-  } catch {
-    showResult("Failed to send emote.", "error");
+    const response = await fetch(url);
+    if (response.ok) {
+      showResult(`Emote ${id} sent successfully!`, "success");
+      showNotif("সেন্ড সফল!");
+    } else {
+      showResult("Failed: Server error.", "error");
+    }
+  } catch (err) {
+    showResult("Network error. Check internet.", "error");
   }
 }
 
@@ -120,6 +133,22 @@ function showResult(msg, type) {
   const box = document.getElementById('resultBox');
   box.textContent = msg;
   box.className = `result-box ${type}`;
+}
+
+function showNotif(msg) {
+  const notif = document.createElement('div');
+  notif.textContent = msg;
+  notif.style.cssText = `
+    position:fixed; bottom:20px; right:20px; background:#27ae60; color:#fff; 
+    padding:12px 24px; border-radius:50px; font-weight:bold; z-index:10000;
+    opacity:0; transition:opacity 0.4s;
+  `;
+  document.body.appendChild(notif);
+  setTimeout(() => notif.style.opacity = '1', 100);
+  setTimeout(() => {
+    notif.style.opacity = '0';
+    setTimeout(() => document.body.removeChild(notif), 400);
+  }, 2000);
 }
 
 // লোড হওয়ার সাথে All ট্যাব
