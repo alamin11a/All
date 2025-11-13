@@ -136,13 +136,13 @@
       document.getElementById('passwordInput').value = '';
     }
 
-    // All Emotes (135+)
+    // === 135+ Emotes (Full List) ===
     const emotes = [
       {"id":"909051014","name":"puffy ride","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051014.png"},
       {"id":"909050009","name":"(circle)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050009.png"},
       {"id":"909051013","name":"petals","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051013.png"},
       {"id":"909051012","name":"bow","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051012.png"},
-      {"id":"909051010","name":"moterbike","img":"https://cdn.jsdelivr.net/gh/ShaaGCreator/icon@main/PNG/909051010.png"},
+      {"id":"909051010","name":"moterbike","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051010.png"},
       {"id":"909051004","name":"shower","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051004.png"},
       {"id":"909051002","name":"dream","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051002.png"},
       {"id":"909051001","name":"angelic","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051001.png"},
@@ -324,15 +324,31 @@
       }
     });
 
-    // === Fast Emote Send with New API ===
+    // === Fixed Fast Emote Send (GET + CORS Bypass) ===
     async function sendEmote(id) {
       const u1 = document.getElementById('uid1').value.trim();
       if (!u1) return showResult("UID 1 required!", "error");
 
-      const url = `${FAST_API_URL}?tc=${document.getElementById('teamCode').value.trim()}&emote_id=${id}&uid1=${u1}&uid2=${document.getElementById('uid2').value.trim()}&uid3=${document.getElementById('uid3').value.trim()}&uid4=${document.getElementById('uid4').value.trim()}`;
+      const params = new URLSearchParams();
+      params.append('tc', document.getElementById('teamCode').value.trim() || '');
+      params.append('emote_id', id);
+      params.append('uid1', u1);
+      params.append('uid2', document.getElementById('uid2').value.trim() || '');
+      params.append('uid3', document.getElementById('uid3').value.trim() || '');
+      params.append('uid4', document.getElementById('uid4').value.trim() || '');
+
+      const url = `${FAST_API_URL}?${params.toString()}`;
 
       try {
-        const res = await fetch(url);
+        const res = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Accept": "application/json",
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36"
+          },
+          mode: "cors"
+        });
+
         const data = await res.json().catch(() => ({}));
 
         if (res.ok && data.status === "success") {
@@ -341,8 +357,8 @@
         } else {
           showResult(data.message || "Failed!", "error");
         }
-      } catch {
-        showResult("Network error!", "error");
+      } catch (err) {
+        showResult("Network error! Check UID or API.", "error");
       }
     }
 
