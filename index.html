@@ -17,6 +17,12 @@
     .btn.facebook { background:#1877f2; }
     .btn.solo { background:#e91e63; }
     .btn:hover { transform:scale(1.05); box-shadow:0 5px 15px rgba(0,0,0,0.2); }
+
+    /* ট্যাব */
+    .tab-container { display:flex; justify-content:center; gap:10px; margin:20px 0; }
+    .tab-btn { padding:12px 24px; background:#eee; border:none; border-radius:10px; font-weight:bold; cursor:pointer; transition:0.3s; }
+    .tab-btn.active { background:#3498db; color:#fff; }
+
     .form-section { background:#fff; padding:20px; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.1); margin-bottom:20px; }
     .input-group { margin-bottom:12px; }
     .input-group label { display:block; margin-bottom:5px; font-weight:600; color:#444; }
@@ -37,7 +43,7 @@
     .send-btn { width:100%; padding:10px; background:#3498db; color:#fff; border:none; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:8px; transition:0.3s; }
     .send-btn:hover { background:#2980b9; }
     .notif { position:fixed; bottom:20px; right:20px; background:#27ae60; color:#fff; padding:12px 24px; border-radius:50px; opacity:0; transition:0.4s; z-index:1000; font-weight:bold; }
-    @media (max-width:600px) { .social-buttons { flex-direction:column; align-items:center; } .emote-grid { grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); } }
+    @media (max-width:600px) { .social-buttons { flex-direction:column; align-items:center; } .tab-container { flex-direction:column; } .emote-grid { grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); } }
   </style>
 </head>
 <body>
@@ -45,34 +51,39 @@
   <header class="header">
     <h1 class="title">MASTER EMOTE SERVER</h1>
     <div class="social-buttons">
-      <!-- আপনার লিংক এখানে দিন -->
-      <a href="https://t.me/your_telegram_channel" target="_blank" class="btn telegram"><i class="fab fa-telegram"></i> Join Telegram</a>
-      <a href="https://youtube.com/@your_channel" target="_blank" class="btn youtube"><i class="fab fa-youtube"></i> Subscribe YouTube</a>
-      <a href="https://facebook.com/your_page" target="_blank" class="btn facebook"><i class="fab fa-facebook"></i> Follow Facebook</a>
-      <a href="https://t.me/your_solo_bot" target="_blank" class="btn solo">Solo Bot</a>
+      <a href="https://t.me/your_telegram" target="_blank" class="btn telegram">Join Telegram</a>
+      <a href="https://youtube.com/@your_channel" target="_blank" class="btn youtube">Subscribe YouTube</a>
+      <a href="https://facebook.com/your_page" target="_blank" class="btn facebook">Follow Facebook</a>
+      <a href="https://t.me/your_bot" target="_blank" class="btn solo">Solo Bot</a>
     </div>
   </header>
+
+  <!-- ট্যাব -->
+  <div class="tab-container">
+    <button id="all-tab" class="tab-btn active" onclick="showTab('all')">All Emotes</button>
+    <button id="evo-tab" class="tab-btn" onclick="showTab('evo')">Evo Only</button>
+  </div>
 
   <!-- ফর্ম -->
   <section class="form-section">
     <div class="input-group">
-      <label><i class="fas fa-users"></i> Team Code:</label>
+      <label>Team Code:</label>
       <input type="text" id="teamCode" placeholder="Enter team code" />
     </div>
     <div class="input-group">
-      <label><i class="fas fa-user"></i> UID 1:</label>
+      <label>UID 1:</label>
       <input type="text" id="uid1" placeholder="Required" class="required" />
     </div>
     <div class="input-group">
-      <label><i class="fas fa-user"></i> UID 2:</label>
+      <label>UID 2:</label>
       <input type="text" id="uid2" placeholder="Optional" />
     </div>
     <div class="input-group">
-      <label><i class="fas fa-user"></i> UID 3:</label>
+      <label>UID 3:</label>
       <input type="text" id="uid3" placeholder="Optional" />
     </div>
     <div class="input-group">
-      <label><i class="fas fa-user"></i> UID 4:</label>
+      <label>UID 4:</label>
       <input type="text" id="uid4" placeholder="Optional" />
     </div>
   </section>
@@ -88,117 +99,7 @@
   <!-- ইমোট গ্রিড -->
   <section class="emote-grid" id="grid"></section>
 
-  <!-- নোটিফিকেশন -->
-  <div id="notif" class="notif">সেন্ড সফল!</div>
-
-  <script>
-    // সব ৫০+ ইমোট (আপনার আগের লিস্ট থেকে)
-    const emotes = [
-      {"id":"909051014","name":"puffy ride","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051014.png"},
-      {"id":"909050009","name":"(circle)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050009.png"},
-      {"id":"909051013","name":"petals","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051013.png"},
-      {"id":"909051012","name":"bow","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051012.png"},
-      {"id":"909051010","name":"moterbike","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051010.png"},
-      {"id":"909051004","name":"shower","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051004.png"},
-      {"id":"909051002","name":"dream","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051002.png"},
-      {"id":"909051001","name":"angelic","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051001.png"},
-      {"id":"909048015","name":"paint","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909048015.png"},
-      {"id":"909044015","name":"sword","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909044015.png"},
-      {"id":"909041008","name":"flar","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909041008.png"},
-      {"id":"909049003","name":"(owl)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909049003.png"},
-      {"id":"909050008","name":"thor","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050008.png"},
-      {"id":"909049001","name":"(bigdill)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909049001.png"},
-      {"id":"909041013","name":"(cs gm)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909041013.png"},
-      {"id":"909050014","name":"(map read)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050014.png"},
-      {"id":"909050015","name":"(tomato)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050015.png"},
-      {"id":"909050002","name":"(ninja summon)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050002.png"},
-      {"id":"909042007","name":"(100 lvl)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909042007.png"},
-      {"id":"909050028","name":"(auraboat)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050028.png"},
-      {"id":"909049012","name":"(flying guns)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909049012.png"},
-      {"id":"909000045","name":"(I heart you)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000045.png"},
-      {"id":"909000034","name":"(pirate flag)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000034.png"},
-      {"id":"909000012","name":"(push up)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000012.png"},
-      {"id":"909000020","name":"(devil move)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000020.png"},
-      {"id":"909000008","name":"(shoot dance)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000008.png"},
-      {"id":"909000006","name":"(chicken)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000006.png"},
-      {"id":"909000014","name":"(THRONE)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000014.png"},
-      {"id":"909000010","name":"(rose)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000010.png"},
-      {"id":"909038004","name":"(valentine heart)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909038004.png"},
-      {"id":"909034001","name":"(rampage book)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909034001.png"},
-      {"id":"909049017","name":"(guild flag)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909049017.png"},
-      {"id":"909040004","name":"(fish)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909040004.png"},
-      {"id":"909041003","name":"(inosuke)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909041003.png"},
-      {"id":"909041012","name":"(br grandmaster)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909041012.png"},
-      {"id":"909049010","name":"(evo p90)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909049010.png"},
-      {"id":"909051003","name":"(evo m60) new","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051003.png"},
-      {"id":"909033002","name":"(evo mp5)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909033002.png"},
-      {"id":"909041005","name":"(evo groza)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909041005.png"},
-      {"id":"909038010","name":"(thompson evo)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909038010.png"},
-      {"id":"909039011","name":"(evo M10 red)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909039011.png"},
-      {"id":"909040010","name":"(evo mp40 blue)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909040010.png"},
-      {"id":"909000081","name":"(evo m10 green)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000081.png"},
-      {"id":"909000085","name":"(evo xm8)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000085.png"},
-      {"id":"909000063","name":"(evo ak)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000063.png"},
-      {"id":"909000075","name":"(evo mp40)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000075.png"},
-      {"id":"909033001","name":"(evo m4A1)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909033001.png"},
-      {"id":"909000090","name":"(evo famas)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000090.png"},
-      {"id":"909000068","name":"(evo scar)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000068.png"},
-      {"id":"909000098","name":"(evo ump)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000098.png"},
-      {"id":"909035007","name":"(evo m18)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035007.png"},
-      {"id":"909037011","name":"(evo fist)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037011.png"},
-      {"id":"909038012","name":"(evo g18)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909038012.png"},
-      {"id":"909035012","name":"(evo AN94)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035012.png"},
-      {"id":"909042008","name":"(evo Woodpecker)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909042008.png"}
-    ];
-
-    const API_URL = "https://emote-psi.vercel.app/api/join";
-
-    // গ্রিড লোড
-    function loadEmotes() {
-      const grid = document.getElementById('grid');
-      grid.innerHTML = '';
-      emotes.forEach(emote => {
-        const card = document.createElement('div');
-        card.className = 'emote-card';
-        card.innerHTML = `
-          <img src="${emote.img}" alt="${emote.name}" onerror="this.src='https://via.placeholder.com/80/333/fff?text=?'">
-          <div class="emote-name">${emote.name}</div>
-          <div class="emote-id">ID: ${emote.id}</div>
-          <button class="send-btn" onclick="sendEmote('${emote.id}')">Send</button>
-        `;
-        grid.appendChild(card);
-      });
-    }
-
-    // সেন্ড ফাংশন
-    async function sendEmote(id) {
-      const tc = document.getElementById('teamCode').value.trim();
-      const u1 = document.getElementById('uid1').value.trim();
-      const u2 = document.getElementById('uid2').value.trim();
-      const u3 = document.getElementById('uid3').value.trim();
-      const u4 = document.getElementById('uid4').value.trim();
-
-      if (!u1) {
-        showResult("UID 1 is required!", "error");
-        return;
-      }
-
-      const url = `${API_URL}?tc=${tc}&emote_id=${id}&uid1=${u1}&uid2=${u2}&uid3=${u3}&uid4=${u4}`;
-      try {
-        await fetch(url);
-        showResult(`Emote ${id} sent successfully!`, "success");
-      } catch {
-        showResult("Failed to send emote.", "error");
-      }
-    }
-
-    function showResult(msg, type) {
-      const box = document.getElementById('resultBox');
-      box.textContent = msg;
-      box.className = `result-box ${type}`;
-    }
-
-    window.onload = loadEmotes;
-  </script>
+  <!-- JS -->
+  <script src="script.js"></script>
 </body>
 </html>
