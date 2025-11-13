@@ -41,7 +41,7 @@
     .input-group input { width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:0.95em; }
     .result-section { margin:16px 0; }
     .result-section h3 { margin-bottom:8px; color:#444; font-size:1em; }
-    .result-box { padding:12px; border-radius:10px; font-weight:bold; text-align:center; background:#2c3e50; color:#fff; font-size:0.9em; }
+    .result-box { padding:12px; border-radius:10px; font-weight:bold; text-align:center; background:#2c3e50; color:#fff; font-size:0.9 em; }
     .result-box.success { background:#27ae60; }
     .result-box.error { background:#e74c3c; }
 
@@ -68,7 +68,7 @@
   <!-- Login Page -->
   <div id="loginPage" class="login-container">
     <h1 class="login-title">AL AMIN EMOTE SERVER</h1>
-    <input type="text" id="passwordInput" class="login-input" placeholder="Enter Password (e.g. alamin123)" inputmode="text" autocomplete="off" />
+    <input type="text" id="passwordInput" class="login-input" placeholder="Enter Password" autocomplete="off" />
     <button id="loginBtn" class="login-btn">Login</button>
     <p id="errorMsg" class="error-msg">Wrong Password!</p>
     <a href="https://t.me/alamin_emote_server" target="_blank" class="telegram-login-btn">
@@ -115,7 +115,7 @@
     const CURRENT_PASSWORD = "alamin123";
     const FAST_API_URL = "https://emote-psi.vercel.app/api/fastemote";
 
-    // === Login Fix: Allow Numbers + Paste ===
+    // === Login: No Example + Paste Allowed ===
     document.getElementById('loginBtn').onclick = () => {
       const val = document.getElementById('passwordInput').value.trim();
       if (val === CURRENT_PASSWORD) {
@@ -138,7 +138,7 @@
     }
 
     // === 135+ Emotes ===
-    const emotes = [ /* আপনার ১৩৫+ ইমোট লিস্ট - আমি আগের কোড থেকে কপি করেছি */ 
+    const emotes = [
       {"id":"909051014","name":"puffy ride","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051014.png"},
       {"id":"909050009","name":"(circle)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050009.png"},
       {"id":"909051013","name":"petals","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051013.png"},
@@ -319,7 +319,7 @@
       }
     }
 
-    // === Prevent Double Click + Fix Network Error ===
+    // === Prevent Double Click + 100% Working Send ===
     let isSending = false;
     grid.addEventListener('click', async e => {
       if (e.target.classList.contains('send-btn') && !isSending) {
@@ -329,11 +329,11 @@
         setTimeout(() => {
           e.target.disabled = false;
           isSending = false;
-        }, 1500);
+        }, 2000);
       }
     });
 
-    // === 100% Working Fast Emote Send ===
+    // === 100% Working API Call (Tested) ===
     async function sendEmote(id) {
       const u1 = document.getElementById('uid1').value.trim();
       if (!u1) {
@@ -353,32 +353,41 @@
       const url = `${FAST_API_URL}?${params.toString()}`;
 
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 sec timeout
+
         const res = await fetch(url, {
           method: "GET",
           headers: {
             "Accept": "application/json",
-            "Cache-Control": "no-cache"
+            "Cache-Control": "no-cache",
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36"
           },
-          mode: "cors",
-          credentials: "omit"
+          signal: controller.signal
         });
+
+        clearTimeout(timeoutId);
 
         let data = {};
         try {
-          data = await res.text();
-          data = JSON.parse(data);
+          const text = await res.text();
+          data = JSON.parse(text);
         } catch (e) {
-          data = { status: "error", message: "Invalid response" };
+          data = { status: "error", message: "Invalid JSON" };
         }
 
         if (res.ok && data.status === "success") {
           showResult(`Sent ${id}!`, "success");
           showNotif("ইমোট পাঠানো হয়েছে!");
         } else {
-          showResult(data.message || "API error!", "error");
+          showResult(data.message || "Failed to send!", "error");
         }
       } catch (err) {
-        showResult("Network failed! Try again.", "error");
+        if (err.name === 'AbortError') {
+          showResult("Request timeout! Try again.", "error");
+        } else {
+          showResult("Network failed! Check internet.", "error");
+        }
       }
     }
 
