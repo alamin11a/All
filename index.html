@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AL AMIN - Fast Emote Sender</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',sans-serif; background:#f0f2f5; color:#333; padding:10px; line-height:1.4; display:flex; justify-content:center; align-items:center; min-height:100vh; }
+    
+    /* Login Page */
+    .login-container { background:#fff; padding:30px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); text-align:center; width:100%; max-width:360px; }
+    .login-title { font-size:1.8em; font-weight:bold; background:linear-gradient(45deg,#ff6b35,#f7931e); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:16px; }
+    .login-input { width:100%; padding:12px; margin:12px 0; border:1px solid #ddd; border-radius:8px; font-size:1em; }
+    .login-btn { width:100%; padding:12px; background:#3498db; color:#fff; border:none; border-radius:8px; font-weight:bold; cursor:pointer; transition:background 0.2s; }
+    .login-btn:hover { background:#2980b9; }
+    .error-msg { color:#e74c3c; margin-top:8px; font-weight:bold; display:none; }
+    .telegram-login-btn { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:12px; background:#0088cc; color:#fff; text-decoration:none; border-radius:8px; font-weight:bold; margin-top:12px; transition:0.2s; }
+    .telegram-login-btn:hover { background:#006699; }
+
+    /* Main Page */
+    .main-container { display:none; width:100%; max-width:800px; }
+    .header { text-align:center; margin-bottom:16px; }
+    .title { font-size:2.2em; font-weight:bold; background:linear-gradient(45deg,#ff6b35,#f7931e); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px; }
+    .social-buttons { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:12px 0; }
+    .btn { padding:10px 16px; border-radius:20px; color:#fff; text-decoration:none; font-weight:bold; display:flex; align-items:center; gap:6px; font-size:0.9em; transition:0.2s; }
+    .btn.telegram { background:#0088cc; }
+    .btn.youtube { background:#ff0000; }
+    .btn.facebook { background:#1877f2; }
+    .btn.solo { background:#e91e63; }
+    .btn:hover { transform:scale(1.03); }
+
+    .tab-container { display:flex; justify-content:center; gap:8px; margin:16px 0; }
+    .tab-btn { padding:10px 20px; background:#eee; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.9em; transition:0.2s; }
+    .tab-btn.active { background:#3498db; color:#fff; }
+
+    .form-section { background:#fff; padding:16px; border-radius:12px; box-shadow:0 3px 10px rgba(0,0,0,0.08); margin-bottom:16px; }
+    .input-group { margin-bottom:10px; }
+    .input-group label { display:block; margin-bottom:4px; font-weight:600; color:#444; font-size:0.9em; }
+    .input-group input { width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:0.95em; }
+    .result-section { margin:16px 0; }
+    .result-section h3 { margin-bottom:8px; color:#444; font-size:1em; }
+    .result-box { padding:12px; border-radius:10px; font-weight:bold; text-align:center; background:#2c3e50; color:#fff; font-size:0.9em; }
+    .result-box.success { background:#27ae60; }
+    .result-box.error { background:#e74c3c; }
+
+    .emote-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:12px; }
+    .emote-card { background:#fff; border-radius:12px; padding:10px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.08); transition:transform 0.2s; }
+    .emote-card:hover { transform:translateY(-3px); }
+    .emote-card img { width:60px; height:60px; object-fit:contain; margin-bottom:6px; border-radius:6px; }
+    .emote-name { font-weight:bold; color:#333; font-size:0.8em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .emote-id { color:#777; font-size:0.7em; margin:3px 0; }
+    .send-btn { width:100%; padding:8px; background:#3498db; color:#fff; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.8em; transition:0.2s; }
+    .send-btn:hover { background:#2980b9; }
+
+    .logout-btn { position:fixed; top:12px; right:12px; background:#e74c3c; color:#fff; padding:8px 12px; border-radius:50px; font-weight:bold; cursor:pointer; font-size:0.8em; z-index:1000; }
+
+    @media (max-width:600px) { 
+      .social-buttons, .tab-container { flex-direction:column; align-items:center; }
+      .emote-grid { grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Page -->
+  <div id="loginPage" class="login-container">
+    <h1 class="login-title">AL AMIN EMOTE SERVER</h1>
+    <input type="password" id="passwordInput" class="login-input" placeholder="Enter Password" />
+    <button id="loginBtn" class="login-btn">Login</button>
+    <p id="errorMsg" class="error-msg">Wrong Password!</p>
+    <a href="https://t.me/alamin_emote_server" target="_blank" class="telegram-login-btn">
+      Join Telegram
+    </a>
+  </div>
+
+  <!-- Main Page -->
+  <div id="mainPage" class="main-container">
+    <button class="logout-btn" onclick="logout()">Logout</button>
+
+    <header class="header">
+      <h1 class="title">AL AMIN EMOTE SERVER</h1>
+      <div class="social-buttons">
+        <a href="https://t.me/alamin_emote_server" target="_blank" class="btn telegram">Join Telegram</a>
+        <a href="#" target="_blank" class="btn youtube">YouTube</a>
+        <a href="#" target="_blank" class="btn facebook">Facebook</a>
+        <a href="#" target="_blank" class="btn solo">Solo Bot</a>
+      </div>
+    </header>
+
+    <div class="tab-container">
+      <button id="all-tab" class="tab-btn active">All</button>
+      <button id="evo-tab" class="tab-btn">Evo</button>
+    </div>
+
+    <section class="form-section">
+      <div class="input-group"><label>Team Code:</label><input type="text" id="teamCode" placeholder="Optional"></div>
+      <div class="input-group"><label>UID 1:</label><input type="text" id="uid1" placeholder="Required" class="required"></div>
+      <div class="input-group"><label>UID 2:</label><input type="text" id="uid2" placeholder="Optional"></div>
+      <div class="input-group"><label>UID 3:</label><input type="text" id="uid3" placeholder="Optional"></div>
+      <div class="input-group"><label>UID 4:</label><input type="text" id="uid4" placeholder="Optional"></div>
+    </section>
+
+    <section class="result-section">
+      <h3>Result:</h3>
+      <div id="resultBox" class="result-box">Ready to send emote.</div>
+    </section>
+
+    <section class="emote-grid" id="grid"></section>
+  </div>
+
+  <script>
+    const CURRENT_PASSWORD = "alamin123";
+    const FAST_API_URL = "https://emote-psi.vercel.app/api/fastemote";
+
+    // Login
+    document.getElementById('loginBtn').onclick = () => {
+      const val = document.getElementById('passwordInput').value.trim();
+      if (val === CURRENT_PASSWORD) {
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('mainPage').style.display = 'block';
+        showTab('all');
+      } else {
+        const err = document.getElementById('errorMsg');
+        err.style.display = 'block';
+        setTimeout(() => err.style.display = 'none', 2000);
+      }
+    };
+
+    document.getElementById('passwordInput').onkeypress = e => e.key === 'Enter' && document.getElementById('loginBtn').click();
+
+    function logout() {
+      document.getElementById('loginPage').style.display = 'block';
+      document.getElementById('mainPage').style.display = 'none';
+      document.getElementById('passwordInput').value = '';
+    }
+
+    // === 135+ Emotes (Full List) ===
+    const emotes = [
+      {"id":"909051014","name":"puffy ride","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051014.png"},
+      {"id":"909050009","name":"(circle)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050009.png"},
+      {"id":"909051013","name":"petals","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051013.png"},
+      {"id":"909051012","name":"bow","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051012.png"},
+      {"id":"909051010","name":"moterbike","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051010.png"},
+      {"id":"909051004","name":"shower","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051004.png"},
+      {"id":"909051002","name":"dream","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051002.png"},
+      {"id":"909051001","name":"angelic","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051001.png"},
+      {"id":"909048015","name":"paint","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909048015.png"},
+      {"id":"909044015","name":"sword","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909044015.png"},
+      {"id":"909041008","name":"flar","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909041008.png"},
+      {"id":"909049003","name":"(owl)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909049003.png"},
+      {"id":"909050008","name":"thor","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050008.png"},
+      {"id":"909049001","name":"(bigdill)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909049001.png"},
+      {"id":"909041013","name":"(cs gm)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909041013.png"},
+      {"id":"909050014","name":"(map read)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050014.png"},
+      {"id":"909050015","name":"(tomato)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050015.png"},
+      {"id":"909050002","name":"(ninja summon)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050002.png"},
+      {"id":"909042007","name":"(100 lvl)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909042007.png"},
+      {"id":"909050028","name":"(auraboat)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050028.png"},
+      {"id":"909049012","name":"(flying guns)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909049012.png"},
+      {"id":"909000045","name":"(I heart you)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000045.png"},
+      {"id":"909000034","name":"(pirate flag)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000034.png"},
+      {"id":"909000012","name":"(push up)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000012.png"},
+      {"id":"909000020","name":"(devil move)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000020.png"},
+      {"id":"909000008","name":"(shoot dance)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000008.png"},
+      {"id":"909000006","name":"(chicken)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000006.png"},
+      {"id":"909000014","name":"(THRONE)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000014.png"},
+      {"id":"909000010","name":"(rose)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000010.png"},
+      {"id":"909038004","name":"(valentine heart)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909038004.png"},
+      {"id":"909034001","name":"(rampage book)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909034001.png"},
+      {"id":"909049017","name":"(guild flag)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909049017.png"},
+      {"id":"909040004","name":"(fish)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909040004.png"},
+      {"id":"909041003","name":"(inosuke)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909041003.png"},
+      {"id":"909041012","name":"(br grandmaster)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909041012.png"},
+      {"id":"909049010","name":"(evo p90)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909049010.png"},
+      {"id":"909051003","name":"(evo m60) new","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051003.png"},
+      {"id":"909033002","name":"(evo mp5)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909033002.png"},
+      {"id":"909041005","name":"(evo groza)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909041005.png"},
+      {"id":"909038010","name":"(thompson evo)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909038010.png"},
+      {"id":"909039011","name":"(evo M10 red)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909039011.png"},
+      {"id":"909040010","name":"(evo mp40 blue)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909040010.png"},
+      {"id":"909000081","name":"(evo m10 green)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000081.png"},
+      {"id":"909000085","name":"(evo xm8)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000085.png"},
+      {"id":"909000063","name":"(evo ak)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000063.png"},
+      {"id":"909000075","name":"(evo mp40)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000075.png"},
+      {"id":"909033001","name":"(evo m4A1)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909033001.png"},
+      {"id":"909000090","name":"(evo famas)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000090.png"},
+      {"id":"909000068","name":"(evo scar)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000068.png"},
+      {"id":"909000098","name":"(evo ump)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000098.png"},
+      {"id":"909035007","name":"(evo m18)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035007.png"},
+      {"id":"909037011","name":"(evo fist)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037011.png"},
+      {"id":"909038012","name":"(evo g18)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909038012.png"},
+      {"id":"909035012","name":"(evo AN94)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035012.png"},
+      {"id":"909042008","name":"(evo Woodpecker)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909042008.png"},
+      // === 85+ Missing Emotes ===
+      {"id":"909034013","name":"CS-Ranked Master Emote","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909034013.png"},
+      {"id":"909034014","name":"Yes, I do","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909034014.png"},
+      {"id":"909035001","name":"Free Money!","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035001.png"},
+      {"id":"909035005","name":"Victorious Eagle","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035005.png"},
+      {"id":"909035006","name":"Flying Saucer","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035006.png"},
+      {"id":"909035008","name":"Bobble Dance","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035008.png"},
+      {"id":"909036009","name":"Weight Training","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036009.png"},
+      {"id":"909036010","name":"Beautiful Love","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036010.png"},
+      {"id":"909036011","name":"Groove Moves","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036011.png"},
+      {"id":"909035013","name":"Louder Please","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035013.png"},
+      {"id":"909035014","name":"Ninja Stand","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035014.png"},
+      {"id":"909035015","name":"Creator In Action","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035015.png"},
+      {"id":"909036001","name":"Ghost Float","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036001.png"},
+      {"id":"909036002","name":"Shiba Surf","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036002.png"},
+      {"id":"909036003","name":"Waiter Walk","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036003.png"},
+      {"id":"909036004","name":"Graffiti Cameraman","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036004.png"},
+      {"id":"909036005","name":"Agile Boxer","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036005.png"},
+      {"id":"909036006","name":"Sunbathing","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036006.png"},
+      {"id":"909036008","name":"Skateboard Swag","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036008.png"},
+      {"id":"909036009","name":"Phantom Tamer","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036009.png"},
+      {"id":"909036010","name":"The Signal","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036010.png"},
+      {"id":"909036011","name":"Eternal Descent","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036011.png"},
+      {"id":"909036012","name":"Swaggy Dance","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036012.png"},
+      {"id":"909036014","name":"Admire","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909036014.png"},
+      {"id":"909037001","name":"Reindeer Float","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037001.png"},
+      {"id":"909037002","name":"Bamboo Dance","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037002.png"},
+      {"id":"909037003","name":"Dance of Constellation","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037003.png"},
+      {"id":"909037004","name":"Trophy Grab","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037004.png"},
+      {"id":"909037005","name":"Starry Hands","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037005.png"},
+      {"id":"909037006","name":"Yumi","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037006.png"},
+      {"id":"909037007","name":"Happy Dancing","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037007.png"},
+      {"id":"909037008","name":"Juggle","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037008.png"},
+      {"id":"909037009","name":"Neon Sign","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037009.png"},
+      {"id":"909037010","name":"Beast Tease","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037010.png"},
+      {"id":"909037012","name":"Clap Dance","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909037012.png"},
+      {"id":"909038001","name":"The Influencer","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909038001.png"},
+      {"id":"909038003","name":"Techno Blast","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909038003.png"},
+      {"id":"909038004","name":"Be My Valentine","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909038004.png"},
+      {"id":"909000002","name":"LOL","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000002.png"},
+      {"id":"909000003","name":"Provoke","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000003.png"},
+      {"id":"909000010","name":"Flowers of Love","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000010.png"},
+      {"id":"909000014","name":"FWC Throne","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000014.png"},
+      {"id":"909000032","name":"Selfie","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000032.png"},
+      {"id":"909000034","name":"Pirate's Flag","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000034.png"},
+      {"id":"909000036","name":"Top DJ","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000036.png"},
+      {"id":"909000038","name":"Power of money","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000038.png"},
+      {"id":"909000039","name":"Eat my dust","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000039.png"},
+      {"id":"909000041","name":"Kongfu","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000041.png"},
+      {"id":"909000045","name":"I heart you","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000045.png"},
+      {"id":"909000046","name":"Tea Time","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000046.png"},
+      {"id":"909000052","name":"Doggie","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000052.png"},
+      {"id":"909000055","name":"I'm Rich!","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000055.png"},
+      {"id":"909000056","name":"Make It Rain","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000056.png"},
+      {"id":"909000057","name":"Dust Off","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000057.png"},
+      {"id":"909000058","name":"Captain Booyah","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000058.png"},
+      {"id":"909000060","name":"BOOYAH!","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000060.png"},
+      {"id":"909000061","name":"Bhangra","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000061.png"},
+      {"id":"909000062","name":"Piece of Cake","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000062.png"},
+      {"id":"909000064","name":"I'm Saitama!","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000064.png"},
+      {"id":"909000065","name":"The Victor","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000065.png"},
+      {"id":"909000066","name":"Sit!","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000066.png"},
+      {"id":"909000067","name":"Obliteration","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000067.png"},
+      {"id":"909000069","name":"Top Scorer","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000069.png"},
+      {"id":"909000070","name":"Triple Kicks","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000070.png"},
+      {"id":"909000071","name":"Cobra Dance","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000071.png"},
+      {"id":"909000072","name":"Predator Pulse","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000072.png"},
+      {"id":"909000073","name":"Ground Punch","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000073.png"},
+      {"id":"909000074","name":"The Biker","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000074.png"},
+      {"id":"909000076","name":"One-Finger Pushup","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000076.png"},
+      {"id":"909000077","name":"Stage Time","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000077.png"},
+      {"id":"909000078","name":"Booyah! Balloon","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000078.png"},
+      {"id":"909000079","name":"More Practice","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000079.png"},
+      {"id":"909000080","name":"FFWS 2021","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000080.png"},
+      {"id":"909000086","name":"Mythos Four","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000086.png"},
+      {"id":"909000087","name":"Champion Grab","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000087.png"},
+      {"id":"909000088","name":"Win and Chill","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000088.png"},
+      {"id":"909000089","name":"Hadouken","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000089.png"},
+      {"id":"909000091","name":"Big Smash","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000091.png"},
+      {"id":"909000093","name":"All In Control","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000093.png"},
+      {"id":"909000094","name":"Debugging","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000094.png"},
+      {"id":"909000095","name":"Waggor Wave","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000095.png"},
+      {"id":"909000096","name":"Crazy Guitar","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909000096.png"},
+      {"id":"909001121","name":"Dribble King","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909001121.png"},
+      {"id":"909001123","name":"Mind It!","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909001123.png"},
+      {"id":"909001124","name":"Golden Combo","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909001124.png"}
+    ];
+
+    const grid = document.getElementById('grid');
+    let currentList = [];
+
+    function showTab(tab) {
+      const allBtn = document.getElementById('all-tab');
+      const evoBtn = document.getElementById('evo-tab');
+      currentList = tab === 'all' ? emotes : emotes.filter(e => e.name.toLowerCase().includes('evo'));
+      allBtn.classList.toggle('active', tab === 'all');
+      evoBtn.classList.toggle('active', tab !== 'all');
+      grid.innerHTML = '';
+      renderChunk(0);
+    }
+
+    function renderChunk(start) {
+      const chunk = currentList.slice(start, start + 12);
+      const fragment = document.createDocumentFragment();
+      chunk.forEach(emote => {
+        const card = document.createElement('div');
+        card.className = 'emote-card';
+        card.innerHTML = `
+          <img data-src="${emote.img}" alt="${emote.name}" onerror="this.src='https://via.placeholder.com/60/333/fff?text=?'" loading="lazy">
+          <div class="emote-name">${emote.name}</div>
+          <div class="emote-id">ID: ${emote.id}</div>
+          <button class="send-btn" data-id="${emote.id}">Send</button>
+        `;
+        fragment.appendChild(card);
+      });
+      grid.appendChild(fragment);
+      document.querySelectorAll('img[data-src]').forEach(img => {
+        img.src = img.dataset.src;
+        img.onload = () => img.removeAttribute('data-src');
+      });
+      if (start + 12 < currentList.length) {
+        requestAnimationFrame(() => renderChunk(start + 12));
+      }
+    }
+
+    grid.addEventListener('click', e => {
+      if (e.target.classList.contains('send-btn')) {
+        sendEmote(e.target.dataset.id);
+      }
+    });
+
+    // === Fixed Fast Emote Send (GET + CORS Bypass) ===
+    async function sendEmote(id) {
+      const u1 = document.getElementById('uid1').value.trim();
+      if (!u1) return showResult("UID 1 required!", "error");
+
+      const params = new URLSearchParams();
+      params.append('tc', document.getElementById('teamCode').value.trim() || '');
+      params.append('emote_id', id);
+      params.append('uid1', u1);
+      params.append('uid2', document.getElementById('uid2').value.trim() || '');
+      params.append('uid3', document.getElementById('uid3').value.trim() || '');
+      params.append('uid4', document.getElementById('uid4').value.trim() || '');
+
+      const url = `${FAST_API_URL}?${params.toString()}`;
+
+      try {
+        const res = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Accept": "application/json",
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36"
+          },
+          mode: "cors"
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (res.ok && data.status === "success") {
+          showResult(`Sent ${id}!`, "success");
+          showNotif("ইমোট পাঠানো হয়েছে!");
+        } else {
+          showResult(data.message || "Failed!", "error");
+        }
+      } catch (err) {
+        showResult("Network error! Check UID or API.", "error");
+      }
+    }
+
+    function showResult(msg, type) {
+      const box = document.getElementById('resultBox');
+      box.textContent = msg;
+      box.className = `result-box ${type}`;
+    }
+
+    function showNotif(msg) {
+      const n = document.createElement('div');
+      n.textContent = msg;
+      n.style.cssText = 'position:fixed;bottom:16px;right:16px;background:#27ae60;color:#fff;padding:10px 20px;border-radius:50px;font-weight:bold;z-index:10000;opacity:0;transition:0.3s';
+      document.body.appendChild(n);
+      setTimeout(() => n.style.opacity = '1', 50);
+      setTimeout(() => { n.style.opacity = '0'; setTimeout(() => n.remove(), 300); }, 1800);
+    }
+
+    document.getElementById('all-tab').onclick = () => showTab('all');
+    document.getElementById('evo-tab').onclick = () => showTab('evo');
+  </script>
+</body>
+    </html>
