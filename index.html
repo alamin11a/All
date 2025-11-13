@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AL AMIN - Emote Sender</title>
+  <title>AL AMIN - Fast Emote Sender</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -110,10 +110,9 @@
     <section class="emote-grid" id="grid"></section>
   </div>
 
-  <!-- Full JS with 135+ Emotes -->
   <script>
     const CURRENT_PASSWORD = "alamin123";
-    const API_URL = "https://emote-psi.vercel.app/api/join";
+    const FAST_API_URL = "https://emote-psi.vercel.app/api/fastemote";
 
     // Login
     document.getElementById('loginBtn').onclick = () => {
@@ -137,13 +136,13 @@
       document.getElementById('passwordInput').value = '';
     }
 
-    // All Emotes (Old + New 85)
+    // All Emotes (135+)
     const emotes = [
       {"id":"909051014","name":"puffy ride","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051014.png"},
       {"id":"909050009","name":"(circle)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050009.png"},
       {"id":"909051013","name":"petals","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051013.png"},
       {"id":"909051012","name":"bow","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051012.png"},
-      {"id":"909051010","name":"moterbike","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051010.png"},
+      {"id":"909051010","name":"moterbike","img":"https://cdn.jsdelivr.net/gh/ShaaGCreator/icon@main/PNG/909051010.png"},
       {"id":"909051004","name":"shower","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051004.png"},
       {"id":"909051002","name":"dream","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051002.png"},
       {"id":"909051001","name":"angelic","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051001.png"},
@@ -194,7 +193,7 @@
       {"id":"909038012","name":"(evo g18)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909038012.png"},
       {"id":"909035012","name":"(evo AN94)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035012.png"},
       {"id":"909042008","name":"(evo Woodpecker)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909042008.png"},
-      // === 85+ Missing Emotes Added Below ===
+      // === 85+ Missing Emotes ===
       {"id":"909034013","name":"CS-Ranked Master Emote","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909034013.png"},
       {"id":"909034014","name":"Yes, I do","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909034014.png"},
       {"id":"909035001","name":"Free Money!","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909035001.png"},
@@ -325,15 +324,26 @@
       }
     });
 
+    // === Fast Emote Send with New API ===
     async function sendEmote(id) {
       const u1 = document.getElementById('uid1').value.trim();
       if (!u1) return showResult("UID 1 required!", "error");
-      const url = `${API_URL}?tc=${document.getElementById('teamCode').value.trim()}&emote_id=${id}&uid1=${u1}&uid2=${document.getElementById('uid2').value.trim()}&uid3=${document.getElementById('uid3').value.trim()}&uid4=${document.getElementById('uid4').value.trim()}`;
+
+      const url = `${FAST_API_URL}?tc=${document.getElementById('teamCode').value.trim()}&emote_id=${id}&uid1=${u1}&uid2=${document.getElementById('uid2').value.trim()}&uid3=${document.getElementById('uid3').value.trim()}&uid4=${document.getElementById('uid4').value.trim()}`;
+
       try {
         const res = await fetch(url);
-        showResult(res.ok ? `Sent ${id}!` : "Failed!", res.ok ? "success" : "error");
-        if (res.ok) showNotif("Sent successfully!");
-      } catch { showResult("Network error.", "error"); }
+        const data = await res.json().catch(() => ({}));
+
+        if (res.ok && data.status === "success") {
+          showResult(`Sent ${id}!`, "success");
+          showNotif("ইমোট পাঠানো হয়েছে!");
+        } else {
+          showResult(data.message || "Failed!", "error");
+        }
+      } catch {
+        showResult("Network error!", "error");
+      }
     }
 
     function showResult(msg, type) {
