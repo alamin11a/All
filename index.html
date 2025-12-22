@@ -366,13 +366,12 @@
 
   <script>
     const CURRENT_PASSWORD = "free";
-    const FAST_API_URL = "https://emote-psi.vercel.app/api/fastemote";
+    const FAST_API_URL = "http://hakvolution.com/emote/index.php";
 
     // === FULL EMOTES LIST ===
-    const emotes = [ /* তোমার ১৩৫+ ইমোট লিস্ট — আমি আগের কোড থেকে কপি করেছি */ 
+    const emotes = [ 
       {"id":"909051014","name":"puffy ride","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051014.png"},
       {"id":"909050009","name":"(circle)","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909050009.png"},
-      // ... বাকি সব (আমি সংক্ষেপে রাখলাম, কিন্তু পুরোটা থাকবে)
       {"id":"909051013","name":"petals","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051013.png"},
       {"id":"909051012","name":"bow","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051012.png"},
       {"id":"909051010","name":"moterbike","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909051010.png"},
@@ -513,7 +512,6 @@
       {"id":"909001124","name":"Golden Combo","img":"https://cdn.jsdelivr.net/gh/ShahGCreator/icon@main/PNG/909001124.png"}
     ];
 
-    // === BUBBLE BACKGROUND ===
     const canvas = document.getElementById('particles');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
@@ -556,7 +554,6 @@
       canvas.height = window.innerHeight;
     });
 
-    // === LOGIN & LOGOUT ===
     const clickSound = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA');
 
     document.getElementById('loginBtn').onclick = () => {
@@ -590,7 +587,6 @@
       }, 500);
     }
 
-    // === EMOTE GRID + SCROLL + API ===
     const grid = document.getElementById('grid');
     let currentList = [];
 
